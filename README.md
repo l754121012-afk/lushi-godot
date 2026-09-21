@@ -8,7 +8,7 @@ Web 版继续作为**数值/机制基准**与对照，Godot 版是**后续主开
 | 阶段 | 内容 | 状态 |
 |---|---|---|
 | P0 | 数据管线 + 卡池浏览器 + 无头自检 | ✅ 已完成 |
-| P1 | 战斗结算内核（纯逻辑、可无头跑、可单测） | ⬜ 下一步 |
+| P1 | 战斗结算内核（纯逻辑、可无头跑、可单测） | 🟡 P1a 骨架完成，技能族持续补齐 |
 | P2 | 备战流程（商店/手牌/布阵/拖拽 + 经济 + AI 运营） | ⬜ |
 | P3 | 表现层（动画/特效/音效/中文排版） | ⬜ |
 | P4 | 内容扩展（新种族、新机制、战役/多人） | ⬜ |
@@ -20,6 +20,17 @@ Web 版继续作为**数值/机制基准**与对照，Godot 版是**后续主开
 - `scripts/main.gd` + `scenes/main.tscn`：卡池与配置浏览器（左侧列表 + 右侧详情，可筛选/搜索）
 - `tools/selftest.gd`：数据自检（数量、种族、星级、经济、进化随从名单校验）
 - 系统中文字体（SystemFont）接入，避免 CJK 显示成方块
+
+### P1a 已交付（战斗内核骨架）
+
+- `sim/unit.gd`：战斗单位（攻/血/关键词/技能/进化条/基因层），纯数据对象
+- `sim/battle.gd`：结算内核，输出**事件序列**（attack/damage/shield_break/taunt_break/death/buff/evop/evo_full/evolve/gene/end），表现层后续直接订阅
+- 已覆盖规则：出手顺序、目标选择与嘲讽优先、圣盾、风怒、伤害与死亡、进化条（攒格→质变：身材×2 / 攻击×1.5）、
+  进化大师（推进器）、混沌始祖（回合吞噬基因 + 基因领主）、回合开始光环
+- `tools/battle_test.gd`：6 条核心规则用例（数值对抗 / 嘲讽优先 / 圣盾吸伤 / 进化条 / 推进器 / 基因领主）全部通过
+
+**待补（P1b）**：机械合体与磁力、献祭契印与债务、星灵连锁、法术与战吼全表、金卡三连、AI 运营决策。
+与 Web 版的逐条一致性会用「同一套场景 JSON 两边跑、对比结果」的 parity 用例来保证。
 
 ## 运行
 
@@ -38,6 +49,9 @@ F:\Godot\4.7.2\Godot_v4.7.2-stable_win64_console.exe --headless --path <项目�
 
 # 截图模式（渲染后存 user://godot_card_browser.png 并退出）
 F:\Godot\4.7.2\Godot_v4.7.2-stable_win64_console.exe --path <项目路径> -- --shot
+
+# 战斗内核自检（6 条核心规则）
+F:\Godot\4.7.2\Godot_v4.7.2-stable_win64_console.exe --headless --path <项目路径> --script res://tools/battle_test.gd
 ```
 
 ## 数据来源与更新
@@ -68,10 +82,13 @@ node ..\_diag_sac\extract_for_godot.cjs
 lushi-godot/
   project.godot          # 主场景 / 自动加载 / 分辨率
   autoload/game_data.gd  # 数据入口
+  sim/unit.gd            # 战斗单位
+  sim/battle.gd          # 战斗结算内核（输出事件序列）
   scripts/main.gd        # 卡池浏览器（P0 工具，后续会并入正式 UI）
   scripts/ui_theme.gd    # 深色主题 + 中文字体
   scenes/main.tscn
   tools/selftest.gd      # 数据自检
+  tools/battle_test.gd   # 战斗规则自检
   data/*.json            # 导出数据（不要手改）
   docs/                  # 截图与文档
 ```

@@ -1,0 +1,57 @@
+extends RefCounted
+## 战斗单位：从 data/cards.json 的卡牌字典构造，只保留战斗需要的状态。
+## 纯数据对象，不依赖任何节点，方便无头测试与批量模拟。
+
+var uid: int = 0
+var card_name: String = ""
+var star: int = 1
+var race: String = "neutral"
+var atk: int = 0
+var hp: int = 0
+var max_hp: int = 0
+var keywords: Array[String] = []
+var skill: Dictionary = {}
+var battlecry: Dictionary = {}
+var gold_card: bool = false
+
+# 战斗内状态
+var alive: bool = true
+var shield: bool = false
+var taunt_active: bool = false
+var attacked_this_round: bool = false
+var evo: int = 0          # 进化条
+var vd: int = 0           # 质变次数（身材线）
+var vc: int = 0           # 质变次数（受击线）
+var gene: int = 0         # 混沌始祖：基因层数
+var stat_gain: int = 1    # 每格进化附带的即时收益基数
+
+static func from_card(card: Dictionary, id: int) -> RefCounted:
+	var u = preload("res://sim/unit.gd").new()
+	u.uid = id
+	u.card_name = String(card.get("n", "?"))
+	u.star = int(card.get("star", 1))
+	u.race = String(card.get("race", "neutral"))
+	u.atk = int(card.get("a", 0))
+	u.hp = int(card.get("h", 0))
+	u.max_hp = u.hp
+	if card.has("k"):
+		for ch in String(card["k"]):
+			u.keywords.append(ch)
+	u.skill = card.get("sk", {})
+	u.battlecry = card.get("bc", {})
+	return u
+
+func has_kw(k: String) -> bool:
+	return keywords.has(k)
+
+func refresh_alive() -> void:
+	alive = hp > 0
+
+func gain(a: int, h: int) -> void:
+	atk += a
+	hp += h
+	if h > 0:
+		max_hp += h
+
+func describe() -> String:
+	return "%s %d/%d [%s]%s" % [card_name, atk, hp, race, "" if alive else " ✝"]
