@@ -8,7 +8,12 @@ const PrepState := preload("res://sim/prep_state.gd")
 const UnitScript := preload("res://sim/unit.gd")
 const BattleScript := preload("res://sim/battle.gd")
 
+const PART_LABEL := {"core": "首脑", "head": "核心", "arm": "武装", "leg": "肢体"}
+const ZONE_SLOTS := 4
+
 var ps
+var _zone_buttons: Array = []
+var _zone_tween: Tween = null
 var _top: Label
 var _shop_row: HBoxContainer
 var _hand_row: HBoxContainer
@@ -130,18 +135,33 @@ func _refresh() -> void:
 
 	for child in _board_row.get_children():
 		child.queue_free()
+	_zone_buttons = []
 	for i in range(ps.board.size()):
 		var b := Button.new()
 		b.custom_minimum_size = Vector2(110, 70)
 		var c = ps.board[i]
-		b.text = "+" if c == null else "%s\n%d/%d" % [String(c.get("n", "?")), int(c.get("a", 0)), int(c.get("h", 0))]
-		if i < 4:
+		var part := "" if c == null else String(c.get("part", ""))
+		var tag := ("[%s] " % String(PART_LABEL.get(part, ""))) if part != "" else ""
+		b.text = "+" if c == null else "%s%s\n%d/%d" % [tag, String(c.get("n", "?")), int(c.get("a", 0)), int(c.get("h", 0))]
+		if i < ZONE_SLOTS:
 			b.add_theme_color_override("font_color", UiTheme.ACCENT if ps.has_formation() else UiTheme.BLUE)
+			_zone_buttons.append(b)
 		b.pressed.connect(func(): _place(i))
 		b.set_script(SlotButton)
 		b.host = self
 		b.slot = i
 		_board_row.add_child(b)
+	# 合体区就绪：循环脉冲（电流感的呼吸）
+	if _zone_tween != null and _zone_tween.is_valid():
+		_zone_tween.kill()
+	if ps.has_formation():
+		_zone_tween = create_tween().set_loops()
+		for b in _zone_buttons:
+			_zone_tween.parallel().tween_property(b, "modulate:a", 0.55, 0.6).set_trans(Tween.TRANS_SINE)
+			_zone_tween.parallel().tween_property(b, "modulate:a", 1.0, 0.6).set_delay(0.6).set_trans(Tween.TRANS_SINE)
+	else:
+		for b in _zone_buttons:
+			b.modulate = Color(1, 1, 1, 1)
 
 func _buy(index: int) -> void:
 	var r: Dictionary = ps.buy(index)
