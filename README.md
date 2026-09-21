@@ -149,3 +149,12 @@ lushi-godot/
 - sim/unit.gd 补 mech_body / follow_type / follow_body_id 字段；parity runner 支持 fusionP/mechLevel/magT/mechRepair
 - 合体战的 Web 侧对照会卡住（Web 的合体流程含 UI 相关调用），暂未纳入 parity；已通过 fusion_test 3/3 与规则自检 6/6 验证
 - 待办：磁力喂料（可用 Web 的 magnetFeed 直接对拍）
+
+## 更新（P1c-7）
+
+- 新增 sim/prep.gd：磁力喂料 magnet_feed —— 材料牌数值按机械支援加成后转移给目标机械
+  · 金卡翻倍 / 磁暴重臂 ×2 攻击 / 超导装配中枢 ×1.5（金 2.5）/ matBoost 加成 / 关键词转移
+  · 机械泰坦在场：目标额外 +30% 转移攻击；统御核心在场：每次喂料 modGrow +1（金 +2）
+  · TODO：超导装配中枢的"其他部位按比例追加"分支待逐行核对后补
+- tools/prep_test.gd：3 条自检通过（基础 4/6、支援加成 18/9、核心成长 +1/+2）
+- 机械族至此：护甲/充能/合体继承/协同攻击/磁力喂料均已迁移；合体战与喂料的双端 parity 待补
