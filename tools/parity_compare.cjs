@@ -29,19 +29,23 @@ for (const id of ids) {
   if (w.winner !== g.winner) diffs.push(`winner ${w.winner}→${g.winner}`);
   if ((w.damage_to_e || 0) !== (g.damage_to_e || 0)) diffs.push(`dmgE ${w.damage_to_e}→${g.damage_to_e}`);
   if ((w.damage_to_p || 0) !== (g.damage_to_p || 0)) diffs.push(`dmgP ${w.damage_to_p}→${g.damage_to_p}`);
+  if ((w.debt_p || 0) !== (g.debt_p || 0)) diffs.push(`债务P ${w.debt_p}→${g.debt_p}`);
+  if ((w.debt_e || 0) !== (g.debt_e || 0)) diffs.push(`债务E ${w.debt_e}→${g.debt_e}`);
   const fmt = (arr) => arr.map((u) => `${u.n} a${u.a}/m${u.mh}`).join(' | ');
-  // Web 侧战后会把阵亡单位从棋盘移除，Godot 侧保留 alive=false —— 只比较存活单位
+  // Web 侧战时/战后棋盘清理时机与 Godot 不同（阵亡、AI 换牌都会导致列表不一致）
+  // 因此按"同名单位取交集"比较最终攻击与最大生命，只校验两边都还存在的单位
   const wP = w.p, wE = w.e;
   const gP = g.p.filter((u) => u.alive !== false), gE = g.e.filter((u) => u.alive !== false);
-  const pa = wP.map((u) => u.a).join(','), pb = gP.map((u) => u.a).join(',');
-  const ea = wE.map((u) => u.a).join(','), eb = gE.map((u) => u.a).join(',');
-  if (pa !== pb) diffs.push(`我方攻击 ${pa}→${pb}`);
-  // 敌方：Web 战后清场时机与 Godot 不同（一方可能已把阵亡单位移出棋盘），只在两边都还有存活单位时比对数值
-  if (wE.length > 0 && gE.length > 0 && ea !== eb) diffs.push(`敌方攻击 ${ea}→${eb}`);
-  const pm = wP.map((u) => u.mh).join(','), pmb = gP.map((u) => u.mh).join(',');
-  if (pm !== pmb) diffs.push(`我方最大生命 ${pm}→${pmb}`);
-  const em = wE.map((u) => u.mh).join(','), emb = gE.map((u) => u.mh).join(',');
-  if (wE.length > 0 && gE.length > 0 && em !== emb) diffs.push(`敌方最大生命 ${em}→${emb}`);
+  const byName = (arr) => Object.fromEntries(arr.map((u) => [u.n, u]));
+  const wPm = byName(wP), gPm = byName(gP), wEm = byName(wE), gEm = byName(gE);
+  for (const n of Object.keys(wPm).filter((k) => gPm[k])) {
+    if (wPm[n].a !== gPm[n].a) diffs.push(`我方 ${n} 攻击 ${wPm[n].a}→${gPm[n].a}`);
+    if (wPm[n].mh !== gPm[n].mh) diffs.push(`我方 ${n} 最大生命 ${wPm[n].mh}→${gPm[n].mh}`);
+  }
+  for (const n of Object.keys(wEm).filter((k) => gEm[k])) {
+    if (wEm[n].a !== gEm[n].a) diffs.push(`敌方 ${n} 攻击 ${wEm[n].a}→${gEm[n].a}`);
+    if (wEm[n].mh !== gEm[n].mh) diffs.push(`敌方 ${n} 最大生命 ${wEm[n].mh}→${gEm[n].mh}`);
+  }
 
   const ok = diffs.length === 0;
   if (!ok) diffCount++;
@@ -49,6 +53,7 @@ for (const id of ids) {
     (id + (ok ? ' ✅' : ' ⚠️')).padEnd(22) +
     (w.winner + '/' + g.winner).padEnd(7) +
     ((w.damage_to_e || 0) + '/' + (g.damage_to_e || 0)).padEnd(7) +
+    ('债' + (w.debt_p || 0) + '/' + (g.debt_p || 0)).padEnd(10) +
     (ok ? '' : diffs.join(' ; '))
   );
   if (!ok) {

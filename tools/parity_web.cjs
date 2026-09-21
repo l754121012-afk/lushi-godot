@@ -50,6 +50,16 @@ const PROJ = 'C:/Users/李泽文/Documents/Codex/2026-07-26/xian/lushi-godot';
       S.b = pSide.board;
       E.b = eSide.board;
       S.hp = 100; E.hp = 100; S.t = 1;
+      // 献祭·债务：场景可以指定契印目标（1 基序号）与初始债务
+      S.t = Number(sc.round || 1);
+      S._contractId = sc.contractP ? pSide.ids[Number(sc.contractP) - 1] : null;
+      E._contractId = sc.contractE ? eSide.ids[Number(sc.contractE) - 1] : null;
+      S._debt = Number(sc.debtP || 0);
+      E._debt = Number(sc.debtE || 0);
+      S._debtTier = debtTier(S._debt);
+      E._debtTier = debtTier(E._debt);
+      S._debtSettled = false;
+      E._debtSettled = false;
       S._phase = 2; E._phase = 2;            // 关闭昼夜加格，先对齐"卡自身机制"
       S._quest = null; E._quest = null;
       R();
@@ -76,6 +86,8 @@ const PROJ = 'C:/Users/李泽文/Documents/Codex/2026-07-26/xian/lushi-godot';
         winner,
         damage_to_p: before.S - S.hp,
         damage_to_e: before.E - E.hp,
+        debt_p: S._debt || 0,
+        debt_e: E._debt || 0,
         hp_after: { p: S.hp, e: E.hp },
         hp_right_after_ft: hpRightAfterFt,
         ref_check: refCheck,

@@ -79,6 +79,34 @@
      "sk": {"t": "attack", "e": "evolve-step", "need": 3, "a": 4, "h": 4}}
    ],
    "e": [{"n": "木桩", "a": 0, "h": 400, "s": 1, "race": "elem"}]
+  },
+  {
+   "id": "debt_settle",
+   "name": "债务节点结算",
+   "seed": 7,
+   "round": 9,
+   "debtP": 20,
+   "p": [
+    {"n": "血祭司祭", "a": 5, "h": 8, "s": 4, "race": "sacrifice",
+     "sk": {"t": "start", "e": "debt-payoff", "a": 1, "h": 1}},
+    {"n": "祭品", "a": 10, "h": 10, "s": 3, "race": "sacrifice"},
+    {"n": "献祭图腾", "a": 6, "h": 8, "s": 7, "race": "sacrifice", "sk": {"t": "passive", "e": "debt-totem"}}
+   ],
+   "e": [{"n": "木桩", "a": 0, "h": 300, "s": 1, "race": "elem"}]
+  },
+  {
+   "id": "debt_contract_death",
+   "name": "契印死亡转债务",
+   "seed": 11,
+   "round": 5,
+   "contractP": 3,
+   "p": [
+    {"n": "债务执事", "a": 4, "h": 200, "s": 3, "race": "sacrifice",
+     "sk": {"t": "death", "e": "debt-boost", "a": 3, "h": 3}},
+    {"n": "献祭图腾", "a": 6, "h": 200, "s": 7, "race": "sacrifice", "sk": {"t": "passive", "e": "debt-totem"}},
+    {"n": "契印目标", "a": 10, "h": 10, "s": 3, "race": "sacrifice"}
+   ],
+   "e": [{"n": "杀手", "a": 30, "h": 200, "s": 1, "race": "elem"}]
   }
  ]
 }

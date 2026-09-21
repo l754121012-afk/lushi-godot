@@ -18,7 +18,14 @@ func _init() -> void:
 		var p_board := _build(sc.get("p", []))
 		var e_board := _build(sc.get("e", []))
 		var battle = BattleScript.new()
-		var r: Dictionary = battle.resolve(p_board, e_board, int(sc.get("seed", 1)))
+		var opts := {
+			"round": int(sc.get("round", 1)),
+			"contractP": int(sc.get("contractP", -1)),
+			"contractE": int(sc.get("contractE", -1)),
+			"debtP": int(sc.get("debtP", 0)),
+			"debtE": int(sc.get("debtE", 0)),
+		}
+		var r: Dictionary = battle.resolve(p_board, e_board, int(sc.get("seed", 1)), 30, opts)
 		results.append(_summary(sc, r, p_board, e_board))
 
 	var out := {"source": "godot", "version": 1, "results": results}
@@ -64,6 +71,8 @@ func _summary(sc: Dictionary, r: Dictionary, p_board: Array, e_board: Array) -> 
 		"rounds": r["rounds"],
 		"damage_to_p": dmg_p,
 		"damage_to_e": dmg_e,
+		"debt_p": int(r.get("debt_p", 0)),
+		"debt_e": int(r.get("debt_e", 0)),
 		"p": _units(p_board),
 		"e": _units(e_board),
 		"events": ev_count,

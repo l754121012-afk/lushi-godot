@@ -24,6 +24,8 @@ var vd: int = 0           # 质变次数（身材线）
 var vc: int = 0           # 质变次数（受击线）
 var gene: int = 0         # 混沌始祖：基因层数
 var stat_gain: int = 1    # 每格进化附带的即时收益基数
+var pay_a: int = 0        # 债务结算前的攻击快照（血祭司祭/祭坛大师）
+var pay_h: int = 0        # 债务结算前的生命快照
 
 static func from_card(card: Dictionary, id: int) -> RefCounted:
 	var u = preload("res://sim/unit.gd").new()

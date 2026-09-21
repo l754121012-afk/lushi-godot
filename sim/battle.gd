@@ -15,11 +15,39 @@ var events: Array = []
 var rng := RandomNumberGenerator.new()
 var log_lines: Array[String] = []
 
-func resolve(p_board: Array, e_board: Array, seed_value: int = 1, max_rounds: int = 30) -> Dictionary:
+# 献祭·债务（P1c）：契印死亡→债务；债务节点；祭坛大师/血祭司祭节点结算
+var round_no: int = 1
+var debt := {"p": 0, "e": 0}
+var debt_tier := {"p": 0, "e": 0}
+var contract_id := {"p": -1, "e": -1}
+var contract_bonus := {"p": 0, "e": 0}
+var debt_settled := {"p": false, "e": false}
+var debt_pay_bonus := {"p": 1.0, "e": 1.0}
+var devour_boost: int = 0
+var death_stat_a: int = 0
+var death_stat_h: int = 0
+
+func resolve(p_board: Array, e_board: Array, seed_value: int = 1, max_rounds: int = 30, opts: Dictionary = {}) -> Dictionary:
 	rng.seed = seed_value
 	events.clear()
 	log_lines.clear()
+	round_no = int(opts.get("round", 1))
+	death_stat_a = 0
+	death_stat_h = 0
+	for side in [SIDE_P, SIDE_E]:
+		var suffix: String = "P" if side == SIDE_P else "E"
+		debt[side] = int(opts.get("debt" + suffix, 0))
+		debt_tier[side] = _debt_tier(int(debt[side]))
+		contract_id[side] = int(opts.get("contract" + suffix, -1))
+		contract_bonus[side] = int(opts.get("contractBonus" + suffix, 0))
+		debt_settled[side] = false
+		debt_pay_bonus[side] = 1.0
 	var boards := {SIDE_P: _clean(p_board), SIDE_E: _clean(e_board)}
+	# 顺序与 Web 一致：同族共鸣 → 再快照债务结算基准（血祭司祭/祭坛大师的攻击/生命）
+	_apply_race_synergy(SIDE_P, boards)
+	_apply_race_synergy(SIDE_E, boards)
+	_prepare_debt(SIDE_P, boards)
+	_prepare_debt(SIDE_E, boards)
 
 	_run_start_skills(SIDE_P, boards)
 	_run_start_skills(SIDE_E, boards)
@@ -60,6 +88,8 @@ func resolve(p_board: Array, e_board: Array, seed_value: int = 1, max_rounds: in
 		"e_board": boards[SIDE_E],
 		"events": events,
 		"log": log_lines,
+		"debt_p": int(debt[SIDE_P]),
+		"debt_e": int(debt[SIDE_E]),
 	}
 
 func _clean(board: Array) -> Array:
@@ -113,8 +143,7 @@ func _attack(attacker, target, side: String, foe: String, boards: Dictionary, fi
 			_emit({"t": "taunt_break", "id": target.uid})
 		_on_attacked(attacker, side, boards)
 		if target.hp <= 0 and target.alive:
-			target.alive = false
-			_emit({"t": "death", "id": target.uid, "name": target.card_name})
+			_kill(target, foe, boards)
 		return
 	if target.shield:
 		target.shield = false
@@ -130,8 +159,7 @@ func _attack(attacker, target, side: String, foe: String, boards: Dictionary, fi
 		_on_damaged(target, side, foe, boards)
 	_on_attacked(attacker, side, boards)
 	if target.hp <= 0 and target.alive:
-		target.alive = false
-		_emit({"t": "death", "id": target.uid, "name": target.card_name})
+		_kill(target, foe, boards)
 		_log("%s 阵亡" % target.card_name)
 
 func _on_attacked(u, side: String, boards: Dictionary) -> void:
@@ -201,6 +229,19 @@ func _run_start_skills(side: String, boards: Dictionary) -> void:
 				var h2 := int(sk.get("h", 2))
 				u.gain(a2, h2)
 				_emit({"t": "gene", "id": u.uid, "gene": u.gene, "a": a2, "h": h2})
+		elif t == "start" and (e == "debt-payoff" or (e == "death-race-buff" and int(sk.get("debtMax", 0)) > 0)):
+			_settle_debt(side, boards, u)
+		elif t == "start" and e == "debt-lord":
+			var tier: int = int(debt_tier[side])
+			if tier > 0:
+				var per := int(sk.get("a", 2))
+				var gain_lord: int = per / 3 if tier == 1 else (per if tier == 2 else per * 2)
+				gain_lord = int(max(1, round(gain_lord)))
+				for ally in _alive_units(boards[side]):
+					if ally.race == "sacrifice":
+						ally.gain(gain_lord, gain_lord)
+						_emit({"t": "buff", "id": ally.uid, "a": gain_lord, "h": gain_lord})
+				_log("%s：债务节点 %d，全献祭 +%d/+%d" % [u.card_name, tier, gain_lord, gain_lord])
 		elif t == "start" and e == "race-buff":
 			var race := String(sk.get("race", u.race))
 			var a3 := int(sk.get("a", 1))
@@ -281,3 +322,135 @@ func _emit(ev: Dictionary) -> void:
 
 func _log(text: String) -> void:
 	log_lines.append(text)
+
+
+## ---------- 献祭·债务 ----------
+
+func _debt_tier(v: int) -> int:
+	if v >= 32: return 3
+	if v >= 18: return 2
+	if v >= 8: return 1
+	return 0
+
+func _debt_payoff_info(v: int) -> Dictionary:
+	if v >= 32: return {"need": 32, "mult": 3, "bonus": 8, "tier": 3}
+	if v >= 18: return {"need": 18, "mult": 2, "bonus": 3, "tier": 2}
+	if v >= 8: return {"need": 8, "mult": 1, "bonus": 1, "tier": 1}
+	return {"need": min(4, v), "mult": 1, "bonus": 0, "tier": 0}
+
+func _debt_ramp() -> float:
+	return clampf(0.35 + float(round_no - 1) * 0.065, 0.35, 1.0)
+
+func _prepare_debt(side: String, boards: Dictionary) -> void:
+	var n := 0
+	for u in _alive_units(boards[side]):
+		var e := String(u.skill.get("e", ""))
+		var is_payoff: bool = e == "debt-payoff" or int(u.skill.get("debtMax", 0)) > 0
+		if is_payoff:
+			n += 1
+			u.pay_a = u.atk
+			u.pay_h = u.hp
+	debt_pay_bonus[side] = 1.0 + minf(0.6, float(max(0, n - 1)) * 0.2)
+
+## 同族共鸣：同一族 ≥3 只时，该族全体 +1/+1（战斗开始，先于随从技能）
+func _apply_race_synergy(side: String, boards: Dictionary) -> void:
+	var counts := {}
+	for u in _alive_units(boards[side]):
+		if u.race == "neutral":
+			continue
+		counts[u.race] = int(counts.get(u.race, 0)) + 1
+	for race in counts.keys():
+		if int(counts[race]) >= 3:
+			for u in _alive_units(boards[side]):
+				if u.race == race:
+					u.gain(1, 1)
+					_emit({"t": "buff", "id": u.uid, "a": 1, "h": 1})
+			_log("同族共鸣：%s +1/+1" % race)
+
+func _add_debt(side: String, n: int) -> void:
+	debt[side] = max(0, int(debt[side]) + n)
+	var nt := _debt_tier(int(debt[side]))
+	var old: int = int(debt_tier[side])
+	if nt > old:
+		var bonus := [0, 1, 3, 6]
+		for ti in range(old + 1, nt + 1):
+			debt[side] = int(debt[side]) + int(bonus[ti])
+		debt_tier[side] = nt
+	_emit({"t": "debt", "side": side, "debt": int(debt[side]), "tier": int(debt_tier[side])})
+
+func _settle_debt(side: String, boards: Dictionary, u) -> void:
+	if bool(debt_settled[side]):
+		return
+	var info := _debt_payoff_info(int(debt[side]))
+	var need := int(info["need"])
+	if need <= 0:
+		return
+	var base := float(need * int(info["mult"]) + int(info["bonus"])) * float(debt_pay_bonus[side])
+	var ga := int(round(base * (1.0 + minf(0.5, float(u.pay_a) / 50.0)) * _debt_ramp() / 3.0))
+	var gh := int(round(base * (1.0 + minf(0.5, float(u.pay_h) / 50.0)) * _debt_ramp() / 3.0))
+	for ally in _alive_units(boards[side]):
+		if ally.race == "sacrifice":
+			ally.gain(ga, gh)
+			_emit({"t": "buff", "id": ally.uid, "a": ga, "h": gh})
+	debt[side] = max(0, int(debt[side]) - need)
+	debt_tier[side] = _debt_tier(int(debt[side]))
+	_debt_node_bonus(side, boards, need)
+	debt_settled[side] = true
+	_emit({"t": "debt_settle", "side": side, "need": need, "a": ga, "h": gh, "debt": int(debt[side])})
+	_log("%s：债务节点 %d 结算，全献祭 +%d/+%d" % [u.card_name, int(info["tier"]), ga, gh])
+
+func _debt_node_bonus(side: String, boards: Dictionary, used: int) -> void:
+	var tb := 0
+	for u in _alive_units(boards[side]):
+		if String(u.skill.get("e", "")) == "debt-totem":
+			tb = 2 if u.gold_card else 1
+			break
+	if tb > 0:
+		var ga: int = max(1, int(round(float(used) * 0.11 * float(tb))))
+		for ally in _alive_units(boards[side]):
+			if ally.race == "sacrifice":
+				ally.gain(ga, ga)
+				_emit({"t": "buff", "id": ally.uid, "a": ga, "h": ga})
+	for u in _alive_units(boards[side]):
+		var rate := float(u.skill.get("debt", 0.0))
+		if rate > 0.0:
+			var gg: int = max(1, int(round(float(used) * rate)))
+			u.gain(gg, gg)
+			_emit({"t": "buff", "id": u.uid, "a": gg, "h": gg})
+
+func _kill(dead, side: String, boards: Dictionary) -> void:
+	dead.alive = false
+	_emit({"t": "death", "id": dead.uid, "name": dead.card_name})
+	death_stat_a += max(0, dead.atk)
+	death_stat_h += max(0, dead.hp)
+	# 食骸者：每次友方死亡按 rate 继承该随从数值（至少 +1/+1）
+	for u in _alive_units(boards[side]):
+		if u == dead or String(u.skill.get("e", "")) != "inherit":
+			continue
+		if u.skill.has("rate"):
+			var r := float(u.skill.get("rate", 0.0))
+			var ia: int = max(1, int(floor(float(dead.atk) * r)))
+			var ih: int = max(1, int(floor(float(dead.hp) * r)))
+			u.gain(ia, ih)
+			_emit({"t": "buff", "id": u.uid, "a": ia, "h": ih})
+	# 契印结算：目标死亡 → 债务
+	if int(contract_id[side]) == dead.uid:
+		var dbb := 0
+		for u in _alive_units(boards[side]):
+			if String(u.skill.get("e", "")) == "debt-boost":
+				dbb += int(u.skill.get("a", 0))
+		var raw := int(ceil(float(dead.atk + dead.hp) / 6.0) + floor(float(round_no) / 4.0) + float(dbb + int(contract_bonus[side])) + floor(float(round_no) / 8.0))
+		raw = clampi(raw, 1, 24)
+		var tot := 0.0
+		for u in _alive_units(boards[side]):
+			if String(u.skill.get("e", "")) == "debt-totem":
+				tot = maxf(tot, 1.5 if u.gold_card else 1.17)
+		if tot > 0.0:
+			raw = int(round(float(raw) * tot))
+		if devour_boost > 0:
+			raw = int(ceil(float(raw) * 1.17))
+			devour_boost = 0
+		_add_debt(side, raw)
+		contract_id[side] = -1
+		contract_bonus[side] = 0
+		_log("契印结算：债务 +%d" % raw)
