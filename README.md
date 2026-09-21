@@ -188,3 +188,13 @@ lushi-godot/
   3. AI 运营：买牌、刷新、升级、卖牌换牌、凑阵容、机械合体与喂料（复用 economy/shop/fusion/prep）
   4. 回合三选一（3/6/9 回合）与备战倒计时
   5. 补合体战与磁力喂料的双端 parity（Web 合体流程带 UI 调用，等备战界面做好后再对拍）
+
+## 更新（P2-4）
+
+- 新增 sim/prep_state.gd：备战期状态机，把已迁移的规则层接起来（经济/商店/三连金卡/合体判定/磁力喂料）
+  · setup(回合, 本局种族, 卡池, 法术池, 种子) → 自动结算本回合收入并生成商店
+  · buy(下标) / reroll() / level_up() / place(手牌,格子) / sell(格子) / try_gild_in_hand()
+  · has_formation() 判定合体区；prepare_fusion() 开打前合体；feed(手牌,格子) 磁力喂料
+  · 购买价 = 星级 × BUY_COST_PER_STAR（常数，便于与 Web 定价对齐后统一调整）
+- tools/prep_state_test.gd：3 条自检通过（买牌上场 / 经济与升级 / 喂料与合体）
+- 下一步：把 prep_state 接到 Godot 节点与鼠标事件（手牌拖拽、合体区高亮、按钮），随后做 AI 运营
