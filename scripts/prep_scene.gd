@@ -123,6 +123,9 @@ func _refresh() -> void:
 		if i == _selected_hand:
 			b.add_theme_color_override("font_color", UiTheme.ACCENT)
 		b.pressed.connect(func(): _select_hand(i))
+		b.set_script(HandButton)
+		b.host = self
+		b.index = i
 		_hand_row.add_child(b)
 
 	for child in _board_row.get_children():
@@ -135,6 +138,9 @@ func _refresh() -> void:
 		if i < 4:
 			b.add_theme_color_override("font_color", UiTheme.ACCENT if ps.has_formation() else UiTheme.BLUE)
 		b.pressed.connect(func(): _place(i))
+		b.set_script(SlotButton)
+		b.host = self
+		b.slot = i
 		_board_row.add_child(b)
 
 func _buy(index: int) -> void:
@@ -178,3 +184,59 @@ func _fight() -> void:
 	_say("开打结果：%s，回合 %d，事件 %d 条%s" % [
 		"胜" if String(r["winner"]) == "p" else "负", int(r["rounds"]), (r["events"] as Array).size(),
 		"，机械战神已合体" if bool(prep.get("ok", false)) else ""])
+
+## ---------- 拖拽（手牌 → 战场；材料牌 → 机械 = 磁力强化） ----------
+
+class HandButton extends Button:
+	var host
+	var index: int = -1
+
+	func _get_drag_data(_pos: Vector2):
+		if host != null:
+			host.begin_drag(index)
+		var preview := Label.new()
+		preview.text = "  " + text + "  "
+		preview.add_theme_color_override("font_color", UiTheme.ACCENT)
+		set_drag_preview(preview)
+		return {"kind": "hand", "index": index}
+
+class SlotButton extends Button:
+	var host
+	var slot: int = -1
+
+	func _can_drop_data(_pos: Vector2, data) -> bool:
+		return data is Dictionary and String(data.get("kind", "")) == "hand"
+
+	func _drop_data(_pos: Vector2, data) -> void:
+		if host != null:
+			host.drop_on_slot(int(data.get("index", -1)), slot)
+
+var _drag_hand := -1
+
+func begin_drag(index: int) -> void:
+	_drag_hand = index
+	if index < 0 or index >= ps.hand.size():
+		return
+	var c = ps.hand[index]
+	var is_mat: bool = c.has("magA") or c.has("magH")
+	_say("拖动 %s%s" % [String(c.get("n", "?")), "（材料牌：拖到机械上可磁力强化）" if is_mat else ""])
+
+func drop_on_slot(hand_index: int, slot: int) -> void:
+	if hand_index < 0 or hand_index >= ps.hand.size():
+		return
+	var c = ps.hand[hand_index]
+	var target = ps.board[slot]
+	var is_mat: bool = c.has("magA") or c.has("magH")
+	if is_mat and target != null and String(target.get("race", "")) == "mech":
+		var r: Dictionary = ps.feed(hand_index, slot)
+		if bool(r["ok"]):
+			_say("磁力强化：%s → %s（+%d/+%d）" % [String(c.get("n", "?")), String(target.get("n", "?")),
+				int(r["gained"]["a"]), int(r["gained"]["h"])])
+		else:
+			_say("磁力喂料失败")
+	elif ps.place(hand_index, slot):
+		_say("上场：%s" % String(c.get("n", "?")))
+	else:
+		_say("该格已占用，或这张牌不能这样用")
+	_drag_hand = -1
+	_refresh()
