@@ -29,7 +29,7 @@ static func from_card(card: Dictionary, id: int) -> RefCounted:
 	var u = preload("res://sim/unit.gd").new()
 	u.uid = id
 	u.card_name = String(card.get("n", "?"))
-	u.star = int(card.get("star", 1))
+	u.star = int(card.get("star", card.get("s", 1)))
 	u.race = String(card.get("race", "neutral"))
 	u.atk = int(card.get("a", 0))
 	u.hp = int(card.get("h", 0))

@@ -3,6 +3,9 @@
 export_presets.cfg
 exports/
 
+# 一致性对照的生成结果
+tests/out/
+
 # 系统与临时文件
 *.tmp
 Thumbs.db

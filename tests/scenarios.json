@@ -1,0 +1,84 @@
+{
+ "version": 1,
+ "note": "Web 版与 Godot 版共用的战斗场景。字段沿用 Web 卡池命名：n 名称 / a 攻击 / h 生命 / s 星级 / k 关键词 / sk 技能。为便于对比，场景尽量只留一个合法目标，避免随机选敌造成差异。",
+ "scenarios": [
+  {
+   "id": "plain_stats",
+   "name": "数值对抗",
+   "seed": 12345,
+   "p": [{"n": "大个", "a": 3, "h": 3, "s": 1, "race": "elem"}],
+   "e": [{"n": "小个", "a": 2, "h": 2, "s": 1, "race": "elem"}]
+  },
+  {
+   "id": "taunt_guard",
+   "name": "嘲讽优先",
+   "seed": 777,
+   "p": [{"n": "打手", "a": 2, "h": 30, "s": 1, "race": "elem"}],
+   "e": [
+    {"n": "盾卫", "a": 0, "h": 10, "s": 1, "race": "elem", "k": "t"},
+    {"n": "刺客", "a": 5, "h": 1, "s": 1, "race": "elem"}
+   ]
+  },
+  {
+   "id": "shield_absorb",
+   "name": "圣盾吸伤",
+   "seed": 4242,
+   "p": [{"n": "打手", "a": 5, "h": 40, "s": 1, "race": "elem"}],
+   "e": [{"n": "圣盾兵", "a": 1, "h": 10, "s": 1, "race": "elem", "k": "d"}]
+  },
+  {
+   "id": "windfury_double",
+   "name": "风怒双击",
+   "seed": 99,
+   "p": [{"n": "风怒兵", "a": 2, "h": 30, "s": 1, "race": "elem", "k": "w"}],
+   "e": [{"n": "木桩", "a": 0, "h": 9, "s": 1, "race": "elem"}]
+  },
+  {
+   "id": "poison_kill",
+   "name": "剧毒斩杀",
+   "seed": 313,
+   "p": [{"n": "毒刺", "a": 1, "h": 20, "s": 1, "race": "elem", "k": "p"}],
+   "e": [{"n": "巨型木桩", "a": 0, "h": 50, "s": 1, "race": "elem"}]
+  },
+  {
+   "id": "evolve_attack_line",
+   "name": "进化条（攻击线）",
+   "seed": 5,
+   "p": [{"n": "细胞体", "a": 10, "h": 40, "s": 1, "race": "evolve",
+     "sk": {"t": "attack", "e": "evolve-step", "need": 3, "a": 4, "h": 4}}],
+   "e": [{"n": "木桩", "a": 0, "h": 400, "s": 1, "race": "elem"}]
+  },
+  {
+   "id": "evolve_on_dmg_line",
+   "name": "进化条（受击线）",
+   "seed": 21,
+   "p": [{"n": "终极进化体", "a": 4, "h": 60, "s": 7, "race": "evolve",
+     "sk": {"t": "on-dmg", "e": "evolve", "need": 3, "maxC": 3}}],
+   "e": [{"n": "打手", "a": 3, "h": 300, "s": 1, "race": "elem"}]
+  },
+  {
+   "id": "evo_advance_support",
+   "name": "进化大师推进器",
+   "seed": 66,
+   "p": [
+    {"n": "进化大师", "a": 5, "h": 6, "s": 6, "race": "evolve",
+     "sk": {"t": "start", "e": "evo-advance", "a": 1, "h": 1}},
+    {"n": "细胞体", "a": 10, "h": 40, "s": 1, "race": "evolve",
+     "sk": {"t": "attack", "e": "evolve-step", "need": 3, "a": 4, "h": 4}}
+   ],
+   "e": [{"n": "木桩", "a": 0, "h": 400, "s": 1, "race": "elem"}]
+  },
+  {
+   "id": "gene_lord",
+   "name": "混沌始祖吞噬质变",
+   "seed": 8888,
+   "p": [
+    {"n": "混沌始祖", "a": 20, "h": 20, "s": 7, "race": "evolve",
+     "sk": {"t": "start", "e": "evo-devourer", "a": 2, "h": 2, "team": 1, "max": 5}},
+    {"n": "细胞体", "a": 10, "h": 40, "s": 1, "race": "evolve",
+     "sk": {"t": "attack", "e": "evolve-step", "need": 3, "a": 4, "h": 4}}
+   ],
+   "e": [{"n": "木桩", "a": 0, "h": 400, "s": 1, "race": "elem"}]
+  }
+ ]
+}

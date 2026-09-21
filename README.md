@@ -8,7 +8,7 @@ Web 版继续作为**数值/机制基准**与对照，Godot 版是**后续主开
 | 阶段 | 内容 | 状态 |
 |---|---|---|
 | P0 | 数据管线 + 卡池浏览器 + 无头自检 | ✅ 已完成 |
-| P1 | 战斗结算内核（纯逻辑、可无头跑、可单测） | 🟡 P1a 骨架完成，技能族持续补齐 |
+| P1 | 战斗结算内核（纯逻辑、可无头跑、可单测） | 🟡 P1a 骨架 + P1b 双端一致性对照完成，技能族持续补齐 |
 | P2 | 备战流程（商店/手牌/布阵/拖拽 + 经济 + AI 运营） | ⬜ |
 | P3 | 表现层（动画/特效/音效/中文排版） | ⬜ |
 | P4 | 内容扩展（新种族、新机制、战役/多人） | ⬜ |
@@ -32,6 +32,17 @@ Web 版继续作为**数值/机制基准**与对照，Godot 版是**后续主开
 **待补（P1b）**：机械合体与磁力、献祭契印与债务、星灵连锁、法术与战吼全表、金卡三连、AI 运营决策。
 与 Web 版的逐条一致性会用「同一套场景 JSON 两边跑、对比结果」的 parity 用例来保证。
 
+### P1b 已交付（Web ⇄ Godot 一致性对照）
+
+- `tests/scenarios.json`：两端共用的战斗场景（9 个：数值对抗 / 嘲讽 / 圣盾 / 风怒 / 剧毒 / 攻线进化 / 受击线进化 / 推进器 / 基因领主）
+- `tools/parity_run.gd`：Godot 侧跑场景 → `tests/out/godot.json`
+- `tools/parity_web.cjs`：Web 侧跑同一批场景（关动画、播种 RNG、关闭昼夜加格与宣言奖励，隔离出"卡自身机制"）→ `tests/out/web.json`
+- `tools/parity_compare.cjs`：对比胜负 / 败方掉血 / 每张卡最终攻击与最大生命
+- 当前结果：**9/9 场景完全一致**
+
+这条通道已经抓到并修掉一个真实 bug：Web 版「基因领主」在战斗结算里改的是真实卡而不是战斗克隆，
+导致同一份加成被回放重复叠加（每个质变实际给混沌始祖 +6/+6、全队 +2/+2，应为 +3/+3 / +1/+1）。
+
 ## 运行
 
 ```powershell
@@ -52,6 +63,11 @@ F:\Godot\4.7.2\Godot_v4.7.2-stable_win64_console.exe --path <项目路径> -- --
 
 # 战斗内核自检（6 条核心规则）
 F:\Godot\4.7.2\Godot_v4.7.2-stable_win64_console.exe --headless --path <项目路径> --script res://tools/battle_test.gd
+
+# 双端一致性：先跑 Web 侧（需要 localhost:8080 服务着 lushi-like），再跑 Godot 侧，最后对比
+node tools\parity_web.cjs
+F:\Godot\4.7.2\Godot_v4.7.2-stable_win64_console.exe --headless --path <项目路径> --script res://tools/parity_run.gd
+node tools\parity_compare.cjs
 ```
 
 ## 数据来源与更新
@@ -89,6 +105,10 @@ lushi-godot/
   scenes/main.tscn
   tools/selftest.gd      # 数据自检
   tools/battle_test.gd   # 战斗规则自检
+  tools/parity_run.gd    # 一致性对照（Godot 侧）
+  tools/parity_web.cjs   # 一致性对照（Web 侧）
+  tools/parity_compare.cjs
+  tests/scenarios.json   # 双端共用场景
   data/*.json            # 导出数据（不要手改）
   docs/                  # 截图与文档
 ```

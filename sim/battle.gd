@@ -33,13 +33,13 @@ func resolve(p_board: Array, e_board: Array, seed_value: int = 1, max_rounds: in
 				if u == null or not u.alive:
 					continue
 				var swings := 2 if u.has_kw("w") else 1
-				for _s in range(swings):
+				for swing in range(swings):
 					if not u.alive:
 						break
 					var target = _pick_target(boards[foe])
 					if target == null:
 						break
-					_attack(u, target, side, foe, boards)
+					_attack(u, target, side, foe, boards, swing == 0)
 			if _alive_count(boards[SIDE_P]) == 0 or _alive_count(boards[SIDE_E]) == 0:
 				break
 
@@ -100,9 +100,22 @@ func _pick_target(foe_board: Array) -> Variant:
 	var pool: Array = taunts if not taunts.is_empty() else alive
 	return pool[rng.randi_range(0, pool.size() - 1)]
 
-func _attack(attacker, target, side: String, foe: String, boards: Dictionary) -> void:
+func _attack(attacker, target, side: String, foe: String, boards: Dictionary, first_swing: bool = true) -> void:
 	var dmg: int = attacker.atk
 	_emit({"t": "attack", "src": attacker.uid, "dst": target.uid, "atk": dmg})
+	# 剧毒：仅首次挥击生效，直接击杀（与 Web 版一致）
+	if first_swing and attacker.has_kw("p") and dmg > 0:
+		target.hp = 0
+		_emit({"t": "poison", "src": attacker.uid, "dst": target.uid})
+		_log("%s 剧毒击杀 %s" % [attacker.card_name, target.card_name])
+		if target.taunt_active:
+			target.taunt_active = false
+			_emit({"t": "taunt_break", "id": target.uid})
+		_on_attacked(attacker, side, boards)
+		if target.hp <= 0 and target.alive:
+			target.alive = false
+			_emit({"t": "death", "id": target.uid, "name": target.card_name})
+		return
 	if target.shield:
 		target.shield = false
 		_emit({"t": "shield_break", "id": target.uid})
