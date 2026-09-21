@@ -164,7 +164,8 @@ func _attack(attacker, target, side: String, foe: String, boards: Dictionary, fi
 			_kill(target, foe, boards)
 		_after_attack_star(attacker, side, foe, boards)
 		return
-	if target.shield:
+	# 与 Web 一致：圣盾只对带 d 关键词的随从生效（充能盾也一样）
+	if target.shield and target.has_kw("d"):
 		target.shield = false
 		_emit({"t": "shield_break", "id": target.uid})
 		dmg = 0
@@ -182,15 +183,16 @@ func _attack(attacker, target, side: String, foe: String, boards: Dictionary, fi
 		target.hp -= dmg
 		_emit({"t": "damage", "src": attacker.uid, "dst": target.uid, "dmg": dmg, "hp": max(0, target.hp)})
 		_log("%s 攻击 %s，造成 %d 伤害" % [attacker.card_name, target.card_name, dmg])
-		_on_damaged(target, side, foe, boards)
 	_on_attacked(attacker, side, boards)
 	if target.hp <= 0 and target.alive:
 		_kill(target, foe, boards)
 		_log("%s 阵亡" % target.card_name)
+	else:
+		# Web：受击充能/受击技能只在随从存活时结算
+		_on_damaged(target, side, foe, boards)
 	_after_attack_star(attacker, side, foe, boards)
 
 func _on_attacked(u, side: String, boards: Dictionary) -> void:
-	_charge_tick(u, side, boards)
 	var sk: Dictionary = u.skill
 	if sk.is_empty():
 		return
@@ -552,6 +554,7 @@ func _random_actor(board: Array):
 	return u
 
 func _swing(u, side: String, foe: String, boards: Dictionary) -> void:
+	_charge_tick(u, side, boards)
 	var swings := 2 if u.has_kw("w") else 1
 	for swing in range(swings):
 		if not u.alive:
@@ -599,4 +602,3 @@ func _charge_tick(u, side: String, boards: Dictionary) -> void:
 			u.gain(ba, bh)
 			_emit({"t": "buff", "id": u.uid, "a": ba, "h": bh})
 			_log("%s：充能强化 +%d/+%d" % [u.card_name, ba, bh])
-

@@ -28,6 +28,8 @@ func _init() -> void:
 			"chainE": int(sc.get("chainE", 0)),
 			"ampP": int(sc.get("ampP", 0)),
 			"ampE": int(sc.get("ampE", 0)),
+			"armorP": int(sc.get("armorP", 0)),
+			"armorE": int(sc.get("armorE", 0)),
 		}
 		var r: Dictionary = battle.resolve(p_board, e_board, int(sc.get("seed", 1)), 30, opts)
 		results.append(_summary(sc, r, p_board, e_board))
@@ -79,6 +81,8 @@ func _summary(sc: Dictionary, r: Dictionary, p_board: Array, e_board: Array) -> 
 		"debt_e": int(r.get("debt_e", 0)),
 		"chain_p": int(r.get("chain_p", 0)),
 		"chain_e": int(r.get("chain_e", 0)),
+		"armor_p": int(r.get("armor_p", 0)),
+		"armor_e": int(r.get("armor_e", 0)),
 		"p": _units(p_board),
 		"e": _units(e_board),
 		"events": ev_count,

@@ -482,6 +482,57 @@
      "race": "elem"
     }
    ]
+  },
+  {
+   "id": "mech_armor_absorb",
+   "name": "维修护甲吸收",
+   "seed": 13,
+   "armorP": 12,
+   "p": [
+    {
+     "n": "装甲模块",
+     "a": 4,
+     "h": 20,
+     "s": 4,
+     "race": "mech"
+    }
+   ],
+   "e": [
+    {
+     "n": "打手",
+     "a": 5,
+     "h": 30,
+     "s": 3,
+     "race": "elem"
+    }
+   ]
+  },
+  {
+   "id": "mech_charge_shield",
+   "name": "充能展开圣盾",
+   "seed": 17,
+   "p": [
+    {
+     "n": "磁力底盘",
+     "a": 4,
+     "h": 10,
+     "s": 3,
+     "race": "mech",
+     "part": "core",
+     "k": "t",
+     "chargeMax": 3,
+     "chargeFx": "shield"
+    }
+   ],
+   "e": [
+    {
+     "n": "木桩",
+     "a": 1,
+     "h": 60,
+     "s": 1,
+     "race": "elem"
+    }
+   ]
   }
  ]
 }

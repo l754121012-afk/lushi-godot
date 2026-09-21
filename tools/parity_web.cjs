@@ -65,6 +65,8 @@ const PROJ = 'C:/Users/李泽文/Documents/Codex/2026-07-26/xian/lushi-godot';
       E.chain = Number(sc.chainE || 0);
       S.starAmp = Number(sc.ampP || 0);
       E.starAmp = Number(sc.ampE || 0);
+      S._battleArmor = Number(sc.armorP || 0);
+      E._battleArmor = Number(sc.armorE || 0);
       S._phase = 2; E._phase = 2;            // 关闭昼夜加格，先对齐"卡自身机制"
       S._quest = null; E._quest = null;
       R();
@@ -95,6 +97,8 @@ const PROJ = 'C:/Users/李泽文/Documents/Codex/2026-07-26/xian/lushi-godot';
         debt_e: E._debt || 0,
         chain_p: S.chain || 0,
         chain_e: E.chain || 0,
+        armor_p: S._battleArmor || 0,
+        armor_e: E._battleArmor || 0,
         hp_after: { p: S.hp, e: E.hp },
         hp_right_after_ft: hpRightAfterFt,
         ref_check: refCheck,

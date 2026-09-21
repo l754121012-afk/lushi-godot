@@ -37,6 +37,7 @@ for (const id of ids) {
   if ((w.debt_e || 0) !== (g.debt_e || 0)) diffs.push(`债务E ${w.debt_e}→${g.debt_e}`);
   if ((w.chain_p || 0) !== (g.chain_p || 0)) diffs.push(`连锁P ${w.chain_p}→${g.chain_p}`);
   if ((w.chain_e || 0) !== (g.chain_e || 0)) diffs.push(`连锁E ${w.chain_e}→${g.chain_e}`);
+  if ((w.armor_p || 0) !== (g.armor_p || 0)) diffs.push(`护甲P ${w.armor_p}→${g.armor_p}`);
   const fmt = (arr) => arr.map((u) => `${u.n} a${u.a}/m${u.mh}`).join(' | ');
   // Web 侧战时/战后棋盘清理时机与 Godot 不同（阵亡、AI 换牌都会导致列表不一致）
   // 因此按"同名单位取交集"比较最终攻击与最大生命，只校验两边都还存在的单位
