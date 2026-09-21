@@ -67,6 +67,11 @@ const PROJ = 'C:/Users/李泽文/Documents/Codex/2026-07-26/xian/lushi-godot';
       E.starAmp = Number(sc.ampE || 0);
       S._battleArmor = Number(sc.armorP || 0);
       E._battleArmor = Number(sc.armorE || 0);
+      // 机械：合体等级 / 维修护甲 / 磁力次数（Web 的 ft() 会在开打前自动做合体）
+      S.mechLevel = Number(sc.mechLevel || 0);
+      S.mechRepair = Number(sc.mechRepair || 0);
+      S._magT = Number(sc.magT || 0);
+      E.mechLevel = 0; E.mechRepair = 0; E._magT = 0;
       S._phase = 2; E._phase = 2;            // 关闭昼夜加格，先对齐"卡自身机制"
       S._quest = null; E._quest = null;
       R();

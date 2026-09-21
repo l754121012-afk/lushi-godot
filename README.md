@@ -141,3 +141,11 @@ lushi-godot/
   · 协同随从：磁暴僚机(strike) / 维修无人机(repair) / 电磁拦截者(guard)，按合体体 45%/25%/30% 攻击与 30%/40%/50% 生命 + mechLevel 生成
 - tools/fusion_test.gd：3 条自检（合体体数值 19/31 k=tw、协同随从 13/13|9/16|10/20、合体区判定与整排后移）
 - 待办：协同攻击(mechFollowAttack)接入战斗循环 + 磁力喂料，然后纳入 parity 场景
+
+## 更新（P1c-6）
+
+- mechFollowAttack（协同攻击）已接入战斗循环：合体体出手后，协同随从各跟随攻击一次（不消耗自身出手）
+  · strike 型造成合体攻击 50%，其余 25%；目标优先嘲讽，护甲/圣盾判定与普通攻击一致
+- sim/unit.gd 补 mech_body / follow_type / follow_body_id 字段；parity runner 支持 fusionP/mechLevel/magT/mechRepair
+- 合体战的 Web 侧对照会卡住（Web 的合体流程含 UI 相关调用），暂未纳入 parity；已通过 fusion_test 3/3 与规则自检 6/6 验证
+- 待办：磁力喂料（可用 Web 的 magnetFeed 直接对拍）

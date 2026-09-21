@@ -33,6 +33,9 @@ var charge_a: int = 0
 var charge_h: int = 0
 var part: String = ""     # 机械合体部位：core / head / arm / leg
 var battle_armor: int = 0 # 维修护甲（战斗内吸收）
+var mech_body: bool = false   # 是否为合体体
+var follow_type: String = ""  # 协同随从类型：strike / repair / guard
+var follow_body_id: int = 0   # 所属合体体
 
 static func from_card(card: Dictionary, id: int) -> RefCounted:
 	var u = preload("res://sim/unit.gd").new()
@@ -53,6 +56,9 @@ static func from_card(card: Dictionary, id: int) -> RefCounted:
 	u.charge_a = int(card.get("chargeA", 0))
 	u.charge_h = int(card.get("chargeH", 0))
 	u.part = String(card.get("part", ""))
+	u.mech_body = bool(card.get("_mechBody", card.get("_mech_body", false)))
+	u.follow_type = String(card.get("_followType", ""))
+	u.follow_body_id = int(card.get("_followBodyId", 0))
 	return u
 
 func has_kw(k: String) -> bool:

@@ -4,6 +4,7 @@ extends SceneTree
 
 const UnitScript := preload("res://sim/unit.gd")
 const BattleScript := preload("res://sim/battle.gd")
+const FusionScript := preload("res://sim/fusion.gd")
 
 func _init() -> void:
 	var text := FileAccess.get_file_as_string("res://tests/scenarios.json")
@@ -15,7 +16,12 @@ func _init() -> void:
 
 	var results: Array = []
 	for sc in doc.get("scenarios", []):
-		var p_board := _build(sc.get("p", []))
+		var p_cards: Array = sc.get("p", [])
+		if bool(sc.get("fusionP", false)):
+			var prep: Dictionary = FusionScript.prepare(p_cards, int(sc.get("mechLevel", 0)), int(sc.get("magT", 0)), int(sc.get("mechRepair", 0)))
+			if bool(prep.get("ok", false)):
+				p_cards = prep["board"]
+		var p_board := _build(p_cards)
 		var e_board := _build(sc.get("e", []))
 		var battle = BattleScript.new()
 		var opts := {

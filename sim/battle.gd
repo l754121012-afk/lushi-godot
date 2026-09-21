@@ -563,6 +563,45 @@ func _swing(u, side: String, foe: String, boards: Dictionary) -> void:
 		if target == null:
 			break
 		_attack(u, target, side, foe, boards, swing == 0)
+	# 机械合体体出手后，协同随从跟随攻击（不消耗它们自己的出手）
+	if u.mech_body:
+		_mech_follow_attack(side, foe, u, boards)
+
+## 协同攻击：合体体出手后，己方协同随从各打一次（strike 50% 合体攻击，其余 25%），
+## 目标优先沿用合体体刚打的目标，其次嘲讽，再随机；不消耗协同随从自身出手。
+func _mech_follow_attack(side: String, foe: String, body, boards: Dictionary) -> void:
+	for u in _alive_units(boards[side]):
+		if u.follow_type == "" or u == body:
+			continue
+		var pool := _alive_units(boards[foe])
+		if pool.is_empty():
+			break
+		var target = pool[rng.randi_range(0, pool.size() - 1)]
+		for t in pool:
+			if t.taunt_active:
+				target = t
+				break
+		var ratio := 0.5 if u.follow_type == "strike" else 0.25
+		var dmg: int = max(1, int(ceil(float(body.atk) * ratio)))
+		_emit({"t": "attack", "src": u.uid, "dst": target.uid, "atk": dmg, "follow": 1})
+		if target.shield and target.has_kw("d"):
+			target.shield = false
+			dmg = 0
+			_emit({"t": "shield_break", "id": target.uid})
+		if target.taunt_active and dmg > 0:
+			target.taunt_active = false
+			_emit({"t": "taunt_break", "id": target.uid})
+		if int(armor[foe]) > 0 and dmg > 0:
+			var absorbed: int = min(dmg, int(armor[foe]))
+			armor[foe] = int(armor[foe]) - absorbed
+			dmg -= absorbed
+			_emit({"t": "armor", "side": foe, "absorbed": absorbed, "left": int(armor[foe])})
+		if dmg > 0:
+			target.hp -= dmg
+			_emit({"t": "damage", "src": u.uid, "dst": target.uid, "dmg": dmg, "hp": max(0, target.hp), "follow": 1})
+			if target.hp <= 0 and target.alive:
+				_kill(target, foe, boards)
+		_log("%s 协同攻击 %s（%d）" % [u.card_name, target.card_name, dmg])
 
 
 ## ---------- 机械：充能 ----------
