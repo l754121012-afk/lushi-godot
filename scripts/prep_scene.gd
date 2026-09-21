@@ -138,7 +138,7 @@ func _refresh() -> void:
 		_board_row.add_child(b)
 
 func _buy(index: int) -> void:
-	var r := ps.buy(index)
+	var r: Dictionary = ps.buy(index)
 	if bool(r["ok"]):
 		_say("买入 %s（-%d金）" % [String(r["card"].get("n", "?")), int(r["cost"])])
 	else:
@@ -154,14 +154,14 @@ func _place(slot: int) -> void:
 	if _selected_hand < 0:
 		_say("先点一张手牌再点空格")
 		return
-	var ok := ps.place(_selected_hand, slot)
+	var ok: bool = ps.place(_selected_hand, slot)
 	_say("上场成功" if ok else "该格已占用或手牌无效")
 	if ok:
 		_selected_hand = -1
 	_refresh()
 
 func _fight() -> void:
-	var prep := ps.prepare_fusion(ps.level / 2, 0, 0)
+	var prep: Dictionary = ps.prepare_fusion(ps.level / 2, 0, 0)
 	var e_board: Array = []
 	for i in range(3):
 		e_board.append(UnitScript.from_card({"n": "训练假人%d" % (i + 1), "a": 3, "h": 20, "s": 2, "race": "elem"}, i + 100))
