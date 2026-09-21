@@ -39,8 +39,8 @@ func _case_with_support() -> void:
 	var r := Prep.magnet_feed(mat, target, board, {})
 	# a = 6*2=12 → ×1.5 = 18；h = 6*1.5 = 9
 	_check(int(r["a"]) == 18 and int(r["h"]) == 9, "支援加成后应为 18/9，实际 %d/%d" % [int(r["a"]), int(r["h"])])
-	# 目标同时是机械泰坦：再 +round(18*0.3)=5 攻击
-	_check(int(target["a"]) == 18 + 18 + 5, "泰坦目标攻击应为 41，实际 %d" % int(target["a"]))
+	# 泰坦加成看的是"场上是否有机械泰坦"，本用例场上没有，故不加成（与 Web 的 has("机械泰坦") 一致）
+	_check(int(target["a"]) == 36, "无泰坦在场时目标攻击应为 36，实际 %d" % int(target["a"]))
 	print("[prep_test] 用例2 支援加成: 转移=", r["a"], "/", r["h"], " 目标攻击=", target["a"])
 
 func _case_titan_and_core() -> void:
