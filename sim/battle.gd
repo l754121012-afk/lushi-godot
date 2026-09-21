@@ -27,6 +27,11 @@ var devour_boost: int = 0
 var death_stat_a: int = 0
 var death_stat_h: int = 0
 
+# 星灵连锁
+var chain := {"p": 0, "e": 0}
+var star_amp := {"p": 0, "e": 0}
+const ECHO_RATIOS := [1.5, 1.0, 0.7, 0.5, 0.4, 0.3, 0.25]
+
 func resolve(p_board: Array, e_board: Array, seed_value: int = 1, max_rounds: int = 30, opts: Dictionary = {}) -> Dictionary:
 	rng.seed = seed_value
 	events.clear()
@@ -42,6 +47,8 @@ func resolve(p_board: Array, e_board: Array, seed_value: int = 1, max_rounds: in
 		contract_bonus[side] = int(opts.get("contractBonus" + suffix, 0))
 		debt_settled[side] = false
 		debt_pay_bonus[side] = 1.0
+		chain[side] = int(opts.get("chain" + suffix, 0))
+		star_amp[side] = int(opts.get("amp" + suffix, 0))
 	var boards := {SIDE_P: _clean(p_board), SIDE_E: _clean(e_board)}
 	# 顺序与 Web 一致：同族共鸣 → 再快照债务结算基准（血祭司祭/祭坛大师的攻击/生命）
 	_apply_race_synergy(SIDE_P, boards)
@@ -53,23 +60,17 @@ func resolve(p_board: Array, e_board: Array, seed_value: int = 1, max_rounds: in
 	_run_start_skills(SIDE_E, boards)
 
 	var round := 0
+	# 与 Web 一致：每轮 = 我方按格位顺序轮转一只出手，然后敌方随机一只出手（交替结算）
 	while _alive_count(boards[SIDE_P]) > 0 and _alive_count(boards[SIDE_E]) > 0 and round < max_rounds:
 		round += 1
-		for side in [SIDE_P, SIDE_E]:
-			var foe: String = SIDE_E if side == SIDE_P else SIDE_P
-			for u in boards[side]:
-				if u == null or not u.alive:
-					continue
-				var swings := 2 if u.has_kw("w") else 1
-				for swing in range(swings):
-					if not u.alive:
-						break
-					var target = _pick_target(boards[foe])
-					if target == null:
-						break
-					_attack(u, target, side, foe, boards, swing == 0)
-			if _alive_count(boards[SIDE_P]) == 0 or _alive_count(boards[SIDE_E]) == 0:
-				break
+		var p = _next_actor(boards[SIDE_P])
+		if p == null:
+			break
+		_swing(p, SIDE_P, SIDE_E, boards)
+		if p.alive and _alive_count(boards[SIDE_E]) > 0:
+			var e = _random_actor(boards[SIDE_E])
+			if e != null:
+				_swing(e, SIDE_E, SIDE_P, boards)
 
 	var p_alive := _alive_count(boards[SIDE_P])
 	var e_alive := _alive_count(boards[SIDE_E])
@@ -90,6 +91,8 @@ func resolve(p_board: Array, e_board: Array, seed_value: int = 1, max_rounds: in
 		"log": log_lines,
 		"debt_p": int(debt[SIDE_P]),
 		"debt_e": int(debt[SIDE_E]),
+		"chain_p": int(chain[SIDE_P]),
+		"chain_e": int(chain[SIDE_E]),
 	}
 
 func _clean(board: Array) -> Array:
@@ -132,6 +135,15 @@ func _pick_target(foe_board: Array) -> Variant:
 
 func _attack(attacker, target, side: String, foe: String, boards: Dictionary, first_swing: bool = true) -> void:
 	var dmg: int = attacker.atk
+	# 星灵连锁：星灵随从/星灵斗士的额外连锁伤害（连锁层数×1.5×星界增幅）
+	var sk_e := String(attacker.skill.get("e", ""))
+	if attacker.race == "star" or sk_e == "chain-dmg":
+		var amp := int(star_amp[side]) + 1
+		var bonus := int(round(float(chain[side]) * 1.5 * float(amp)))
+		if attacker.race == "star":
+			dmg += bonus
+		if sk_e == "chain-dmg":
+			dmg += bonus
 	_emit({"t": "attack", "src": attacker.uid, "dst": target.uid, "atk": dmg})
 	# 剧毒：仅首次挥击生效，直接击杀（与 Web 版一致）
 	if first_swing and attacker.has_kw("p") and dmg > 0:
@@ -144,6 +156,7 @@ func _attack(attacker, target, side: String, foe: String, boards: Dictionary, fi
 		_on_attacked(attacker, side, boards)
 		if target.hp <= 0 and target.alive:
 			_kill(target, foe, boards)
+		_after_attack_star(attacker, side, foe, boards)
 		return
 	if target.shield:
 		target.shield = false
@@ -161,6 +174,7 @@ func _attack(attacker, target, side: String, foe: String, boards: Dictionary, fi
 	if target.hp <= 0 and target.alive:
 		_kill(target, foe, boards)
 		_log("%s 阵亡" % target.card_name)
+	_after_attack_star(attacker, side, foe, boards)
 
 func _on_attacked(u, side: String, boards: Dictionary) -> void:
 	var sk: Dictionary = u.skill
@@ -231,6 +245,22 @@ func _run_start_skills(side: String, boards: Dictionary) -> void:
 				_emit({"t": "gene", "id": u.uid, "gene": u.gene, "a": a2, "h": h2})
 		elif t == "start" and (e == "debt-payoff" or (e == "death-race-buff" and int(sk.get("debtMax", 0)) > 0)):
 			_settle_debt(side, boards, u)
+		elif t == "start" and e == "chain-start":
+			chain[side] = int(chain[side]) + 1
+			_log("%s：连锁 +1（当前 %d）" % [u.card_name, int(chain[side])])
+		elif t == "start" and e == "star-amp":
+			chain[side] = int(chain[side]) + 1
+			star_amp[side] = int(star_amp[side]) + 1
+			_log("%s：连锁 +1，星灵连锁伤害翻倍（增幅 %d）" % [u.card_name, int(star_amp[side])])
+		elif t == "start" and e == "race-buff" and String(sk.get("race", "")) == "star":
+			var base_chain: int = int(chain[side]) if int(chain[side]) > 0 else 1
+			var scale := float(sk.get("statScale", 1.0))
+			var g := int(round(float(base_chain) * scale))
+			for ally in _alive_units(boards[side]):
+				if ally.race == "star":
+					ally.gain(g, g)
+					_emit({"t": "buff", "id": ally.uid, "a": g, "h": g})
+			_log("%s：全星灵 +%d/+%d（连锁 %d）" % [u.card_name, g, g, int(chain[side])])
 		elif t == "start" and e == "debt-lord":
 			var tier: int = int(debt_tier[side])
 			if tier > 0:
@@ -454,3 +484,64 @@ func _kill(dead, side: String, boards: Dictionary) -> void:
 		contract_id[side] = -1
 		contract_bonus[side] = 0
 		_log("契印结算：债务 +%d" % raw)
+
+
+## ---------- 星灵连锁 ----------
+
+func _after_attack_star(atk, side: String, foe: String, boards: Dictionary) -> void:
+	if atk.race != "star":
+		return
+	chain[side] = int(chain[side]) + 1
+	var echoes: Array = []
+	for u in _alive_units(boards[side]):
+		if String(u.skill.get("e", "")) == "star-echo":
+			echoes.append(u)
+	for i in range(echoes.size()):
+		var pool := _alive_units(boards[foe])
+		if pool.is_empty():
+			break
+		var target = pool[rng.randi_range(0, pool.size() - 1)]
+		var ratio: float = float(ECHO_RATIOS[min(i, ECHO_RATIOS.size() - 1)])
+		var ed: int = max(1, int(round(float(chain[side]) * ratio)))
+		target.hp -= ed
+		_emit({"t": "damage", "src": echoes[i].uid, "dst": target.uid, "dmg": ed, "hp": max(0, target.hp), "echo": 1})
+		_log("星光回响：%s 受到 %d 伤害" % [target.card_name, ed])
+		if target.hp <= 0 and target.alive:
+			_kill(target, foe, boards)
+
+
+## 出手调度：我方按格位序列轮转，敌方随机（对齐 Web）
+func _next_actor(board: Array):
+	var first = null
+	for u in board:
+		if u == null or not u.alive:
+			continue
+		if first == null:
+			first = u
+		if not u.attacked_this_round:
+			u.attacked_this_round = true
+			return u
+	for u in board:
+		if u != null and u.alive:
+			u.attacked_this_round = false
+	if first != null:
+		first.attacked_this_round = true
+	return first
+
+func _random_actor(board: Array):
+	var alive := _alive_units(board)
+	if alive.is_empty():
+		return null
+	var u = alive[rng.randi_range(0, alive.size() - 1)]
+	u.attacked_this_round = true
+	return u
+
+func _swing(u, side: String, foe: String, boards: Dictionary) -> void:
+	var swings := 2 if u.has_kw("w") else 1
+	for swing in range(swings):
+		if not u.alive:
+			break
+		var target = _pick_target(boards[foe])
+		if target == null:
+			break
+		_attack(u, target, side, foe, boards, swing == 0)

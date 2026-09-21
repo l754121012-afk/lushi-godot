@@ -107,6 +107,30 @@
     {"n": "契印目标", "a": 10, "h": 10, "s": 3, "race": "sacrifice"}
    ],
    "e": [{"n": "杀手", "a": 30, "h": 200, "s": 1, "race": "elem"}]
+  },
+  {
+   "id": "star_chain_burst",
+   "name": "星灵连锁爆发",
+   "seed": 31,
+   "nondeterministic": "敌方随机选敌：两端 RNG 流不同，存活者会不同；只对比胜负/连锁等确定性结果",
+   "p": [
+    {"n": "星象观测者", "a": 2, "h": 4, "s": 2, "race": "star", "sk": {"t": "start", "e": "chain-start"}},
+    {"n": "星灵斗士", "a": 3, "h": 6, "s": 5, "race": "star", "sk": {"t": "attack", "e": "chain-dmg"}},
+    {"n": "星灵回响者", "a": 5, "h": 8, "s": 6, "race": "star", "sk": {"t": "aura", "e": "star-echo"}},
+    {"n": "星界之主", "a": 9, "h": 9, "s": 7, "race": "star", "sk": {"t": "start", "e": "star-amp"}}
+   ],
+   "e": [{"n": "精英杀手", "a": 20, "h": 70, "s": 3, "race": "elem"}]
+  },
+  {
+   "id": "star_amp_stack",
+   "name": "星界增幅叠加",
+   "seed": 77,
+   "p": [
+    {"n": "星界之主", "a": 9, "h": 40, "s": 7, "race": "star", "sk": {"t": "start", "e": "star-amp"}},
+    {"n": "星界之主", "a": 9, "h": 40, "s": 7, "race": "star", "sk": {"t": "start", "e": "star-amp"}},
+    {"n": "星灵斗士", "a": 3, "h": 40, "s": 5, "race": "star", "sk": {"t": "attack", "e": "chain-dmg"}}
+   ],
+   "e": [{"n": "木桩", "a": 1, "h": 220, "s": 1, "race": "elem"}]
   }
  ]
 }

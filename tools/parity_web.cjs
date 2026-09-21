@@ -60,6 +60,11 @@ const PROJ = 'C:/Users/李泽文/Documents/Codex/2026-07-26/xian/lushi-godot';
       E._debtTier = debtTier(E._debt);
       S._debtSettled = false;
       E._debtSettled = false;
+      // 星灵连锁：可指定初始连锁层数与星界增幅
+      S.chain = Number(sc.chainP || 0);
+      E.chain = Number(sc.chainE || 0);
+      S.starAmp = Number(sc.ampP || 0);
+      E.starAmp = Number(sc.ampE || 0);
       S._phase = 2; E._phase = 2;            // 关闭昼夜加格，先对齐"卡自身机制"
       S._quest = null; E._quest = null;
       R();
@@ -88,6 +93,8 @@ const PROJ = 'C:/Users/李泽文/Documents/Codex/2026-07-26/xian/lushi-godot';
         damage_to_e: before.E - E.hp,
         debt_p: S._debt || 0,
         debt_e: E._debt || 0,
+        chain_p: S.chain || 0,
+        chain_e: E.chain || 0,
         hp_after: { p: S.hp, e: E.hp },
         hp_right_after_ft: hpRightAfterFt,
         ref_check: refCheck,

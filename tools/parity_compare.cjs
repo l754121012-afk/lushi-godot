@@ -15,6 +15,9 @@ function load(name) {
 
 const web = load('web.json');
 const godot = load('godot.json');
+const scenarios = JSON.parse(fs.readFileSync(path.join(PROJ, 'tests/scenarios.json'), 'utf8')).scenarios;
+// 标了 nondeterministic 的场景：两端 RNG 流不同会导致随机选敌结果不同，只对比确定性字段（胜负/连锁/债务）
+const loose = Object.fromEntries(scenarios.filter((s) => s.nondeterministic).map((s) => [s.id, true]));
 const wById = Object.fromEntries(web.results.map((r) => [r.id, r]));
 const gById = Object.fromEntries(godot.results.map((r) => [r.id, r]));
 const ids = web.results.map((r) => r.id);
@@ -27,10 +30,13 @@ for (const id of ids) {
   if (!w || !g) { console.log(id + ' 缺少一边结果'); diffCount++; continue; }
   const diffs = [];
   if (w.winner !== g.winner) diffs.push(`winner ${w.winner}→${g.winner}`);
-  if ((w.damage_to_e || 0) !== (g.damage_to_e || 0)) diffs.push(`dmgE ${w.damage_to_e}→${g.damage_to_e}`);
-  if ((w.damage_to_p || 0) !== (g.damage_to_p || 0)) diffs.push(`dmgP ${w.damage_to_p}→${g.damage_to_p}`);
+  const strict = !loose[id];
+  if (strict && (w.damage_to_e || 0) !== (g.damage_to_e || 0)) diffs.push(`dmgE ${w.damage_to_e}→${g.damage_to_e}`);
+  if (strict && (w.damage_to_p || 0) !== (g.damage_to_p || 0)) diffs.push(`dmgP ${w.damage_to_p}→${g.damage_to_p}`);
   if ((w.debt_p || 0) !== (g.debt_p || 0)) diffs.push(`债务P ${w.debt_p}→${g.debt_p}`);
   if ((w.debt_e || 0) !== (g.debt_e || 0)) diffs.push(`债务E ${w.debt_e}→${g.debt_e}`);
+  if ((w.chain_p || 0) !== (g.chain_p || 0)) diffs.push(`连锁P ${w.chain_p}→${g.chain_p}`);
+  if ((w.chain_e || 0) !== (g.chain_e || 0)) diffs.push(`连锁E ${w.chain_e}→${g.chain_e}`);
   const fmt = (arr) => arr.map((u) => `${u.n} a${u.a}/m${u.mh}`).join(' | ');
   // Web 侧战时/战后棋盘清理时机与 Godot 不同（阵亡、AI 换牌都会导致列表不一致）
   // 因此按"同名单位取交集"比较最终攻击与最大生命，只校验两边都还存在的单位
@@ -38,22 +44,25 @@ for (const id of ids) {
   const gP = g.p.filter((u) => u.alive !== false), gE = g.e.filter((u) => u.alive !== false);
   const byName = (arr) => Object.fromEntries(arr.map((u) => [u.n, u]));
   const wPm = byName(wP), gPm = byName(gP), wEm = byName(wE), gEm = byName(gE);
-  for (const n of Object.keys(wPm).filter((k) => gPm[k])) {
-    if (wPm[n].a !== gPm[n].a) diffs.push(`我方 ${n} 攻击 ${wPm[n].a}→${gPm[n].a}`);
-    if (wPm[n].mh !== gPm[n].mh) diffs.push(`我方 ${n} 最大生命 ${wPm[n].mh}→${gPm[n].mh}`);
-  }
-  for (const n of Object.keys(wEm).filter((k) => gEm[k])) {
-    if (wEm[n].a !== gEm[n].a) diffs.push(`敌方 ${n} 攻击 ${wEm[n].a}→${gEm[n].a}`);
-    if (wEm[n].mh !== gEm[n].mh) diffs.push(`敌方 ${n} 最大生命 ${wEm[n].mh}→${gEm[n].mh}`);
+  if (strict) {
+    for (const n of Object.keys(wPm).filter((k) => gPm[k])) {
+      if (wPm[n].a !== gPm[n].a) diffs.push(`我方 ${n} 攻击 ${wPm[n].a}→${gPm[n].a}`);
+      if (wPm[n].mh !== gPm[n].mh) diffs.push(`我方 ${n} 最大生命 ${wPm[n].mh}→${gPm[n].mh}`);
+    }
+    for (const n of Object.keys(wEm).filter((k) => gEm[k])) {
+      if (wEm[n].a !== gEm[n].a) diffs.push(`敌方 ${n} 攻击 ${wEm[n].a}→${gEm[n].a}`);
+      if (wEm[n].mh !== gEm[n].mh) diffs.push(`敌方 ${n} 最大生命 ${wEm[n].mh}→${gEm[n].mh}`);
+    }
   }
 
   const ok = diffs.length === 0;
   if (!ok) diffCount++;
   console.log(
-    (id + (ok ? ' ✅' : ' ⚠️')).padEnd(22) +
+    (id + (ok ? ' ✅' : ' ⚠️') + (strict ? '' : '(随机)')).padEnd(22) +
     (w.winner + '/' + g.winner).padEnd(7) +
     ((w.damage_to_e || 0) + '/' + (g.damage_to_e || 0)).padEnd(7) +
     ('债' + (w.debt_p || 0) + '/' + (g.debt_p || 0)).padEnd(10) +
+    ('链' + (w.chain_p || 0) + '/' + (g.chain_p || 0)).padEnd(9) +
     (ok ? '' : diffs.join(' ; '))
   );
   if (!ok) {

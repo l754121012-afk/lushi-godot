@@ -24,6 +24,10 @@ func _init() -> void:
 			"contractE": int(sc.get("contractE", -1)),
 			"debtP": int(sc.get("debtP", 0)),
 			"debtE": int(sc.get("debtE", 0)),
+			"chainP": int(sc.get("chainP", 0)),
+			"chainE": int(sc.get("chainE", 0)),
+			"ampP": int(sc.get("ampP", 0)),
+			"ampE": int(sc.get("ampE", 0)),
 		}
 		var r: Dictionary = battle.resolve(p_board, e_board, int(sc.get("seed", 1)), 30, opts)
 		results.append(_summary(sc, r, p_board, e_board))
@@ -73,6 +77,8 @@ func _summary(sc: Dictionary, r: Dictionary, p_board: Array, e_board: Array) -> 
 		"damage_to_e": dmg_e,
 		"debt_p": int(r.get("debt_p", 0)),
 		"debt_e": int(r.get("debt_e", 0)),
+		"chain_p": int(r.get("chain_p", 0)),
+		"chain_e": int(r.get("chain_e", 0)),
 		"p": _units(p_board),
 		"e": _units(e_board),
 		"events": ev_count,
