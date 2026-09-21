@@ -229,3 +229,10 @@ lushi-godot/
 
 - 备战界面：合体区（前 4 格）加**部位角标**（[首脑]/[核心]/[武装]/[肢体]）+ 满足合体条件时**循环脉冲**（modulate 呼吸），替换原来只有变色的表现
 - 部位角标来自卡牌 part 字段，和 Web 的"首脑位"标注语义一致
+
+## 更新（P3-3）
+
+- 战斗演出第一步：新增 _battle_narrative()，把 sim/battle.gd 的事件序列渲染成可读战报
+  · 覆盖 attack/damage(协同·回响)/shield_break/taunt_break/death/buff/evop/evo_full/evolve/gene/armor/debt/debt_settle/ch/end
+  · 开打后战报直接接在日志面板里（当前是文本版，后续替换为逐条播放动画）
+- 事件序列 → 文本的映射表就绪后，做动画只需把同一批事件换成"位移/闪光/飘字"的动作

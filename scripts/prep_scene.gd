@@ -204,6 +204,43 @@ func _fight() -> void:
 	_say("开打结果：%s，回合 %d，事件 %d 条%s" % [
 		"胜" if String(r["winner"]) == "p" else "负", int(r["rounds"]), (r["events"] as Array).size(),
 		"，机械战神已合体" if bool(prep.get("ok", false)) else ""])
+	# 战斗演出（第一步：把事件序列渲染成可读战报；后续会改成逐条播放动画）
+	var names := {}
+	for u in p_board:
+		names[u.uid] = u.card_name
+	for u in e_board:
+		names[u.uid] = u.card_name
+	for line in _battle_narrative(r["events"], names, 16):
+		_say(line)
+
+## 事件序列 → 战报文本（演出层骨架）
+func _battle_narrative(events: Array, names: Dictionary, max_lines: int = 16) -> Array[String]:
+	var out: Array[String] = []
+	var uname := func(id) -> String: return String(names.get(int(id), "单位%d" % int(id)))
+	for ev in events:
+		match String(ev.get("t", "")):
+			"attack":
+				out.append("%s 出手 → %s（%d）" % [uname.call(ev["src"]), uname.call(ev["dst"]), int(ev.get("atk", 0))])
+			"damage":
+				out.append("    %s 受 %d 伤害 → HP %d%s" % [uname.call(ev["dst"]), int(ev.get("dmg", 0)), int(ev.get("hp", 0)),
+					"（协同）" if ev.get("follow", 0) else ("（回响）" if ev.get("echo", 0) else "")])
+			"shield_break": out.append("    圣盾破碎")
+			"taunt_break": out.append("    嘲讽被打破")
+			"death": out.append("%s 阵亡" % String(ev.get("name", "?")))
+			"buff": out.append("    %s 成长 +%d/+%d" % [uname.call(ev["id"]), int(ev.get("a", 0)), int(ev.get("h", 0))])
+			"evop": out.append("    %s 进化 %d/%d" % [uname.call(ev["id"]), int(ev.get("evo", 0)), int(ev.get("need", 3))])
+			"evo_full": out.append("    %s 满格质变！" % uname.call(ev["id"]))
+			"evolve": out.append("    %s 完成质变（%s）" % [uname.call(ev["id"]), String(ev.get("kind", ""))])
+			"gene": out.append("    %s 吞噬基因 %d/5" % [uname.call(ev["id"]), int(ev.get("gene", 0))])
+			"armor": out.append("    维修护甲吸收 %d（剩 %d）" % [int(ev.get("absorbed", 0)), int(ev.get("left", 0))])
+			"debt": out.append("    债务 → %d（节点 %d）" % [int(ev.get("debt", 0)), int(ev.get("tier", 0))])
+			"debt_settle": out.append("    债务结算 %d 点 → 全献祭 +%d/+%d" % [int(ev.get("need", 0)), int(ev.get("a", 0)), int(ev.get("h", 0))])
+			"ch": out.append("    %s 充能 %d/%d" % [uname.call(ev["id"]), int(ev.get("c", 0)), int(ev.get("cm", 0))])
+			"end": out.append("—— 战斗结束 ——")
+		if out.size() >= max_lines:
+			out.append("……（共 %d 条事件）" % events.size())
+			break
+	return out
 
 ## ---------- 拖拽（手牌 → 战场；材料牌 → 机械 = 磁力强化） ----------
 
