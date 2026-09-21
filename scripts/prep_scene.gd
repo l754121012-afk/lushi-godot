@@ -7,6 +7,7 @@ const UiTheme := preload("res://scripts/ui_theme.gd")
 const PrepState := preload("res://sim/prep_state.gd")
 const UnitScript := preload("res://sim/unit.gd")
 const BattleScript := preload("res://sim/battle.gd")
+const Economy := preload("res://sim/economy.gd")
 
 const PART_LABEL := {"core": "首脑", "head": "核心", "arm": "武装", "leg": "肢体"}
 const ZONE_SLOTS := 4
@@ -14,6 +15,11 @@ const ZONE_SLOTS := 4
 var ps
 var _zone_buttons: Array = []
 var _zone_tween: Tween = null
+var _timer_label: Label
+var _prep_left := 45.0          # 备战倒计时（秒）
+var _speed := 1.0               # 战报播放速度
+var _busy := false              # 战斗播放中锁住操作
+var _round_choice_host: VBoxContainer
 var _top: Label
 var _shop_row: HBoxContainer
 var _hand_row: HBoxContainer
@@ -63,6 +69,9 @@ func _build_ui() -> void:
 	_top = Label.new()
 	_top.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 	top_row.add_child(_top)
+	_timer_label = Label.new()
+	_timer_label.add_theme_color_override("font_color", UiTheme.GREEN)
+	top_row.add_child(_timer_label)
 	var btn_roll := Button.new(); btn_roll.text = "刷新 (1金)"
 	btn_roll.pressed.connect(func(): _say("刷新" if ps.reroll() else "金币不足，无法刷新"); _refresh())
 	top_row.add_child(btn_roll)
@@ -72,6 +81,11 @@ func _build_ui() -> void:
 	var btn_fight := Button.new(); btn_fight.text = "开打"
 	btn_fight.pressed.connect(_fight)
 	top_row.add_child(btn_fight)
+	var btn_speed := Button.new(); btn_speed.text = "速度 x1"
+	btn_speed.pressed.connect(func():
+		_speed = 2.0 if _speed < 2.0 else 1.0
+		btn_speed.text = "速度 x%d" % int(_speed))
+	top_row.add_child(btn_speed)
 
 	root.add_child(_label("商店（点击购买）"))
 	_shop_row = HBoxContainer.new(); _shop_row.add_theme_constant_override("separation", 8)
@@ -83,6 +97,8 @@ func _build_ui() -> void:
 	_board_row = HBoxContainer.new(); _board_row.add_theme_constant_override("separation", 8)
 	root.add_child(_board_row)
 	_log = RichTextLabel.new()
+	_round_choice_host = VBoxContainer.new()
+	root.add_child(_round_choice_host)
 	_log.bbcode_enabled = true
 	_log.size_flags_vertical = Control.SIZE_EXPAND_FILL
 	_log.add_theme_stylebox_override("normal", UiTheme.panel_style(UiTheme.PANEL_2))
@@ -98,7 +114,18 @@ func _say(text: String) -> void:
 	_log.text = text + "\n" + _log.text
 
 func _card_text(c: Dictionary) -> String:
-	return "%s\n%d/%d\n%d金" % [String(c.get("n", "?")), int(c.get("a", 0)), int(c.get("h", 0)), ps.buy_cost(c)]
+	var star := int(c.get("s", c.get("star", 1)))
+	return "%s%s\n%d★  %d/%d\n%d金" % [
+		"◆" if bool(c.get("g", false)) else "",
+		String(c.get("n", "?")), star, int(c.get("a", 0)), int(c.get("h", 0)), ps.buy_cost(c)]
+
+func _mini_card_text(c: Dictionary) -> String:
+	var star := int(c.get("s", c.get("star", 1)))
+	var part := String(PART_LABEL.get(String(c.get("part", "")), ""))
+	return "%s%s%s\n%d★ %d/%d" % [
+		"◆" if bool(c.get("g", false)) else "",
+		("[%s] " % part) if part != "" else "",
+		String(c.get("n", "?")), star, int(c.get("a", 0)), int(c.get("h", 0))]
 
 func _refresh() -> void:
 	_top.text = "回合 %d   金币 %d   等级 %d   连胜 %d / 连败 %d%s" % [
@@ -124,7 +151,9 @@ func _refresh() -> void:
 	for i in range(ps.hand.size()):
 		var b := Button.new()
 		b.custom_minimum_size = Vector2(110, 70)
-		b.text = String(ps.hand[i].get("n", "?"))
+		b.text = _mini_card_text(ps.hand[i])
+		if bool(ps.hand[i].get("g", false)):
+			b.add_theme_color_override("font_color", UiTheme.ACCENT)
 		if i == _selected_hand:
 			b.add_theme_color_override("font_color", UiTheme.ACCENT)
 		b.pressed.connect(func(): _select_hand(i))
@@ -140,9 +169,9 @@ func _refresh() -> void:
 		var b := Button.new()
 		b.custom_minimum_size = Vector2(110, 70)
 		var c = ps.board[i]
-		var part := "" if c == null else String(c.get("part", ""))
-		var tag := ("[%s] " % String(PART_LABEL.get(part, ""))) if part != "" else ""
-		b.text = "+" if c == null else "%s%s\n%d/%d" % [tag, String(c.get("n", "?")), int(c.get("a", 0)), int(c.get("h", 0))]
+		b.text = "+" if c == null else _mini_card_text(c)
+		if c != null and bool(c.get("g", false)):
+			b.add_theme_color_override("font_color", UiTheme.ACCENT)
 		if i < ZONE_SLOTS:
 			b.add_theme_color_override("font_color", UiTheme.ACCENT if ps.has_formation() else UiTheme.BLUE)
 			_zone_buttons.append(b)
@@ -210,8 +239,60 @@ func _fight() -> void:
 		names[u.uid] = u.card_name
 	for u in e_board:
 		names[u.uid] = u.card_name
+	_busy = true
 	for line in _battle_narrative(r["events"], names, 16):
 		_say(line)
+		await get_tree().create_timer(0.28 / maxf(0.5, _speed)).timeout
+	_busy = false
+	if String(r["winner"]) == "p":
+		ps.win_streak += 1
+		ps.lose_streak = 0
+	elif String(r["winner"]) == "e":
+		ps.lose_streak += 1
+		ps.win_streak = 0
+	_advance_round()
+	_refresh()
+
+## 回合推进：金币按表重发（不结转）、商店重roll；3/6/9 回合给一次三选一
+func _advance_round() -> void:
+	ps.round_no += 1
+	ps.gold = Economy.round_income(ps.round_no, ps.win_streak, ps.lose_streak)
+	ps.roll_shop()
+	_prep_left = 45.0
+	if ps.round_no == 3 or ps.round_no == 6 or ps.round_no == 9:
+		_show_round_choice(ps.round_no)
+
+## 3/6/9 回合三选一（金 / 免费刷新 / 混合），选完即移除面板
+func _show_round_choice(r: int) -> void:
+	var gain := (r / 3) * 2          # 3→2金、6→4金、9→6金
+	var free := 1 if r == 3 else 2
+	_say("【第 %d 回合选择】请在下方三选一" % r)
+	var panel := HBoxContainer.new()
+	panel.add_theme_constant_override("separation", 8)
+	var mk := func(text: String, fn: Callable) -> Button:
+		var b := Button.new()
+		b.text = text
+		b.pressed.connect(func():
+			fn.call()
+			panel.queue_free()
+			_refresh())
+		return b
+	panel.add_child(mk.call("+%d 金" % gain, func(): ps.gold += gain))
+	panel.add_child(mk.call("免费刷新 ×%d" % free, func(): ps.free_refresh += free))
+	panel.add_child(mk.call("+1 金 +1 免费刷新", func(): ps.gold += 1; ps.free_refresh += 1))
+	_round_choice_host.add_child(panel)
+
+## 备战倒计时：到点自动开打
+func _process(delta: float) -> void:
+	if _busy or ps == null:
+		return
+	_prep_left -= delta
+	if _prep_left <= 0.0:
+		_prep_left = 45.0
+		_say("⏳ 备战时间到，自动开打")
+		_fight()
+	if _timer_label != null:
+		_timer_label.text = "⏳ %ds" % int(max(0.0, _prep_left))
 
 ## 事件序列 → 战报文本（演出层骨架）
 func _battle_narrative(events: Array, names: Dictionary, max_lines: int = 16) -> Array[String]:
