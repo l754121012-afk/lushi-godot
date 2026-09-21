@@ -1,0 +1,49 @@
+{
+ "meta": {
+  "source": "lushi-like/index.html",
+  "exportedAt": "2026-09-21T15:55:09.647Z",
+  "version": 1
+ },
+ "races": {
+  "undead": {
+   "name": "亡灵",
+   "icon": "💀"
+  },
+  "elem": {
+   "name": "元素",
+   "icon": "💧"
+  },
+  "dragon": {
+   "name": "龙",
+   "icon": "🐉"
+  },
+  "demon": {
+   "name": "恶魔",
+   "icon": "😈"
+  },
+  "star": {
+   "name": "星灵",
+   "icon": "💫"
+  },
+  "mech": {
+   "name": "机械",
+   "icon": "mechanism"
+  },
+  "vampire": {
+   "name": "血族",
+   "icon": "🧛"
+  },
+  "gambler": {
+   "name": "赌徒",
+   "icon": "🎲"
+  },
+  "evolve": {
+   "name": "进化",
+   "icon": "🦋"
+  },
+  "sacrifice": {
+   "name": "献祭",
+   "icon": "sigil"
+  }
+ }
+}

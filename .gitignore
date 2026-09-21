@@ -1,0 +1,8 @@
+# Godot 编辑器缓存 / 导入产物
+.godot/
+export_presets.cfg
+exports/
+
+# 系统与临时文件
+*.tmp
+Thumbs.db

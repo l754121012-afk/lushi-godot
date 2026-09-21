@@ -1,0 +1,26 @@
+; 炉石旅人 · Godot 版
+; 由 lushi-like/index.html 迁移而来，数据见 data/*.json
+
+config_version=5
+
+[application]
+
+config/name="炉石旅人"
+config/description="自走棋卡牌对战（从单文件 Web 版迁移到 Godot）"
+run/main_scene="res://scenes/main.tscn"
+config/features=PackedStringArray("4.7")
+
+[autoload]
+
+GameData="*res://autoload/game_data.gd"
+
+[display]
+
+window/size/viewport_width=1440
+window/size/viewport_height=900
+window/stretch/mode="canvas_items"
+
+[rendering]
+
+renderer/rendering_method="gl_compatibility"
+textures/vram_compression/import_etc2_astc=true

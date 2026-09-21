@@ -1,0 +1,434 @@
+{
+ "meta": {
+  "source": "lushi-like/index.html",
+  "exportedAt": "2026-09-21T15:55:09.647Z",
+  "version": 1
+ },
+ "config": {
+  "levelCost": [
+   0,
+   6,
+   8,
+   10,
+   12,
+   14,
+   16
+  ],
+  "baseGold": [
+   {
+    "round": 1,
+    "gold": 3
+   },
+   {
+    "round": 2,
+    "gold": 4
+   },
+   {
+    "round": 3,
+    "gold": 5
+   },
+   {
+    "round": 4,
+    "gold": 6
+   },
+   {
+    "round": 5,
+    "gold": 7
+   },
+   {
+    "round": 6,
+    "gold": 8
+   },
+   {
+    "round": 7,
+    "gold": 9
+   },
+   {
+    "round": 8,
+    "gold": 10
+   },
+   {
+    "round": 9,
+    "gold": 10
+   },
+   {
+    "round": 10,
+    "gold": 10
+   },
+   {
+    "round": 11,
+    "gold": 10
+   },
+   {
+    "round": 12,
+    "gold": 10
+   },
+   {
+    "round": 13,
+    "gold": 10
+   },
+   {
+    "round": 14,
+    "gold": 10
+   },
+   {
+    "round": 15,
+    "gold": 10
+   },
+   {
+    "round": 16,
+    "gold": 10
+   },
+   {
+    "round": 17,
+    "gold": 10
+   },
+   {
+    "round": 18,
+    "gold": 10
+   },
+   {
+    "round": 19,
+    "gold": 10
+   },
+   {
+    "round": 20,
+    "gold": 10
+   }
+  ],
+  "interest": [
+   {
+    "streak": 0,
+    "gold": 0,
+    "loseGold": 0
+   },
+   {
+    "streak": 1,
+    "gold": 1,
+    "loseGold": 1
+   },
+   {
+    "streak": 2,
+    "gold": 2,
+    "loseGold": 2
+   },
+   {
+    "streak": 3,
+    "gold": 3,
+    "loseGold": 3
+   },
+   {
+    "streak": 4,
+    "gold": 3,
+    "loseGold": 3
+   },
+   {
+    "streak": 5,
+    "gold": 4,
+    "loseGold": 4
+   },
+   {
+    "streak": 6,
+    "gold": 4,
+    "loseGold": 4
+   },
+   {
+    "streak": 7,
+    "gold": 5,
+    "loseGold": 5
+   },
+   {
+    "streak": 8,
+    "gold": 5,
+    "loseGold": 5
+   },
+   {
+    "streak": 9,
+    "gold": 6,
+    "loseGold": 6
+   },
+   {
+    "streak": 10,
+    "gold": 6,
+    "loseGold": 6
+   },
+   {
+    "streak": 11,
+    "gold": 6,
+    "loseGold": 6
+   },
+   {
+    "streak": 12,
+    "gold": 6,
+    "loseGold": 6
+   }
+  ],
+  "aiGold": [
+   {
+    "difficulty": 1,
+    "rows": [
+     {
+      "round": 1,
+      "gold": 0
+     },
+     {
+      "round": 2,
+      "gold": 1
+     },
+     {
+      "round": 3,
+      "gold": 2
+     },
+     {
+      "round": 4,
+      "gold": 3
+     },
+     {
+      "round": 5,
+      "gold": 4
+     },
+     {
+      "round": 6,
+      "gold": 6
+     },
+     {
+      "round": 7,
+      "gold": 7
+     },
+     {
+      "round": 8,
+      "gold": 9
+     },
+     {
+      "round": 9,
+      "gold": 10
+     },
+     {
+      "round": 10,
+      "gold": 11
+     },
+     {
+      "round": 11,
+      "gold": 12
+     },
+     {
+      "round": 12,
+      "gold": 14
+     },
+     {
+      "round": 13,
+      "gold": 15
+     },
+     {
+      "round": 14,
+      "gold": 15
+     },
+     {
+      "round": 15,
+      "gold": 15
+     },
+     {
+      "round": 16,
+      "gold": 15
+     },
+     {
+      "round": 17,
+      "gold": 15
+     },
+     {
+      "round": 18,
+      "gold": 15
+     },
+     {
+      "round": 19,
+      "gold": 15
+     },
+     {
+      "round": 20,
+      "gold": 15
+     }
+    ]
+   },
+   {
+    "difficulty": 2,
+    "rows": [
+     {
+      "round": 1,
+      "gold": 0
+     },
+     {
+      "round": 2,
+      "gold": 1
+     },
+     {
+      "round": 3,
+      "gold": 3
+     },
+     {
+      "round": 4,
+      "gold": 5
+     },
+     {
+      "round": 5,
+      "gold": 8
+     },
+     {
+      "round": 6,
+      "gold": 11
+     },
+     {
+      "round": 7,
+      "gold": 14
+     },
+     {
+      "round": 8,
+      "gold": 17
+     },
+     {
+      "round": 9,
+      "gold": 20
+     },
+     {
+      "round": 10,
+      "gold": 22
+     },
+     {
+      "round": 11,
+      "gold": 24
+     },
+     {
+      "round": 12,
+      "gold": 28
+     },
+     {
+      "round": 13,
+      "gold": 30
+     },
+     {
+      "round": 14,
+      "gold": 30
+     },
+     {
+      "round": 15,
+      "gold": 30
+     },
+     {
+      "round": 16,
+      "gold": 30
+     },
+     {
+      "round": 17,
+      "gold": 30
+     },
+     {
+      "round": 18,
+      "gold": 30
+     },
+     {
+      "round": 19,
+      "gold": 30
+     },
+     {
+      "round": 20,
+      "gold": 30
+     }
+    ]
+   },
+   {
+    "difficulty": 3,
+    "rows": [
+     {
+      "round": 1,
+      "gold": 0
+     },
+     {
+      "round": 2,
+      "gold": 1
+     },
+     {
+      "round": 3,
+      "gold": 4
+     },
+     {
+      "round": 4,
+      "gold": 7
+     },
+     {
+      "round": 5,
+      "gold": 11
+     },
+     {
+      "round": 6,
+      "gold": 15
+     },
+     {
+      "round": 7,
+      "gold": 19
+     },
+     {
+      "round": 8,
+      "gold": 23
+     },
+     {
+      "round": 9,
+      "gold": 27
+     },
+     {
+      "round": 10,
+      "gold": 30
+     },
+     {
+      "round": 11,
+      "gold": 32
+     },
+     {
+      "round": 12,
+      "gold": 38
+     },
+     {
+      "round": 13,
+      "gold": 41
+     },
+     {
+      "round": 14,
+      "gold": 41
+     },
+     {
+      "round": 15,
+      "gold": 41
+     },
+     {
+      "round": 16,
+      "gold": 41
+     },
+     {
+      "round": 17,
+      "gold": 41
+     },
+     {
+      "round": 18,
+      "gold": 41
+     },
+     {
+      "round": 19,
+      "gold": 41
+     },
+     {
+      "round": 20,
+      "gold": 41
+     }
+    ]
+   }
+  ],
+  "aiDifficulty": {
+   "easy": 1,
+   "medium": 2,
+   "hard": 3
+  },
+  "shopSlots": 5,
+  "boardSlots": 7,
+  "handLimit": 10,
+  "startHp": 100,
+  "startGold": 3
+ }
+}

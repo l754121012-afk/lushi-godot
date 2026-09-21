@@ -1,0 +1,1261 @@
+{
+ "meta": {
+  "source": "lushi-like/index.html",
+  "exportedAt": "2026-09-21T15:55:09.647Z",
+  "version": 1
+ },
+ "tiers": [
+  {
+   "star": 1,
+   "cards": [
+    {
+     "n": "护甲学徒",
+     "a": 1,
+     "h": 2,
+     "s": 1
+    },
+    {
+     "n": "冲锋新兵",
+     "a": 2,
+     "h": 1,
+     "s": 1
+    },
+    {
+     "n": "精灵射手",
+     "a": 1,
+     "h": 1,
+     "k": "b",
+     "bc": {
+      "e": "ally-atk",
+      "a": 1
+     },
+     "s": 1
+    },
+    {
+     "n": "渔人猎潮者",
+     "a": 2,
+     "h": 1,
+     "k": "b",
+     "bc": {
+      "e": "free-refresh"
+     },
+     "s": 1
+    },
+    {
+     "n": "石牙野猪",
+     "a": 1,
+     "h": 1,
+     "s": 1
+    },
+    {
+     "n": "献祭者",
+     "a": 3,
+     "h": 3,
+     "s": 1,
+     "race": "sacrifice",
+     "bc": {
+      "e": "devour"
+     }
+    },
+    {
+     "n": "星尘游民",
+     "a": 2,
+     "h": 2,
+     "race": "star",
+     "s": 1
+    },
+    {
+     "n": "细胞体",
+     "a": 1,
+     "h": 2,
+     "race": "evolve",
+     "sk": {
+      "t": "attack",
+      "e": "evolve-step",
+      "need": 3,
+      "a": 4,
+      "h": 4
+     },
+     "s": 1
+    }
+   ]
+  },
+  {
+   "star": 2,
+   "cards": [
+    {
+     "n": "铁甲卫士",
+     "a": 1,
+     "h": 4,
+     "k": "t",
+     "s": 2
+    },
+    {
+     "n": "战地老兵",
+     "a": 3,
+     "h": 2,
+     "k": "b",
+     "bc": {
+      "e": "ally-rnd",
+      "a": 1,
+      "h": 1
+     },
+     "s": 2
+    },
+    {
+     "n": "狗头人",
+     "a": 2,
+     "h": 2,
+     "k": "b",
+     "bc": {
+      "e": "gold",
+      "g": 1
+     },
+     "s": 2
+    },
+    {
+     "n": "血帆袭击者",
+     "a": 2,
+     "h": 3,
+     "k": "b",
+     "bc": {
+      "e": "dmg-rnd",
+      "d": 1
+     },
+     "s": 2
+    },
+    {
+     "n": "血契司仪",
+     "a": 3,
+     "h": 5,
+     "s": 2,
+     "race": "sacrifice",
+     "sk": {
+      "t": "start",
+      "e": "contract-set",
+      "debtBonus": 1
+     }
+    },
+    {
+     "n": "虚空行者",
+     "a": 1,
+     "h": 3,
+     "race": "demon",
+     "k": "t",
+     "s": 2
+    },
+    {
+     "n": "亡灵学徒",
+     "a": 2,
+     "h": 2,
+     "s": 2,
+     "race": "undead",
+     "sk": {
+      "t": "death",
+      "e": "summon",
+      "count": 1
+     }
+    },
+    {
+     "n": "星象观测者",
+     "a": 2,
+     "h": 4,
+     "s": 2,
+     "race": "star",
+     "sk": {
+      "t": "start",
+      "e": "chain-start"
+     }
+    }
+   ]
+  },
+  {
+   "star": 3,
+   "cards": [
+    {
+     "n": "秘法学徒",
+     "a": 3,
+     "h": 4,
+     "race": "elem",
+     "sk": {
+      "t": "spell-cast",
+      "e": "spell-core",
+      "race": "elem",
+      "a": 2,
+      "h": 2,
+      "raceA": 1,
+      "raceH": 1
+     },
+     "s": 3
+    },
+    {
+     "n": "法术学徒",
+     "a": 2,
+     "h": 3,
+     "race": "elem",
+     "k": "b",
+     "bc": {
+      "e": "spell-boost",
+      "a": 1,
+      "h": 1
+     },
+     "s": 3
+    },
+    {
+     "n": "森金卫士",
+     "a": 2,
+     "h": 5,
+     "k": "t",
+     "s": 3
+    },
+    {
+     "n": "苦痛侍僧",
+     "a": 1,
+     "h": 3,
+     "race": "undead",
+     "sk": {
+      "t": "start",
+      "e": "dmg-allies",
+      "d": 1
+     },
+     "s": 3
+    },
+    {
+     "n": "眼镜蛇",
+     "a": 1,
+     "h": 3,
+     "k": "p",
+     "s": 3
+    },
+    {
+     "n": "星灵使徒",
+     "a": 2,
+     "h": 3,
+     "s": 3,
+     "race": "star",
+     "sk": {
+      "t": "spell-cast",
+      "e": "race-buff",
+      "race": "star",
+      "a": 1,
+      "h": 1,
+      "scope": "rnd",
+      "statScale": 1
+     }
+    },
+    {
+     "n": "债务执事",
+     "a": 4,
+     "h": 6,
+     "s": 3,
+     "race": "sacrifice",
+     "sk": {
+      "t": "death",
+      "e": "debt-boost",
+      "a": 3,
+      "h": 3
+     }
+    },
+    {
+     "n": "磁力底盘",
+     "a": 4,
+     "h": 10,
+     "s": 3,
+     "race": "mech",
+     "part": "core",
+     "k": "t",
+     "chargeMax": 3,
+     "chargeFx": "shield"
+    },
+    {
+     "n": "核心学徒",
+     "a": 4,
+     "h": 5,
+     "s": 3,
+     "race": "mech",
+     "part": "head",
+     "modGrow": 1,
+     "chargeMax": 2,
+     "chargeFx": "buff",
+     "chargeA": 2,
+     "chargeH": 2,
+     "atkSk": {
+      "e": "self-race-buff",
+      "race": "mech",
+      "a": 1,
+      "h": 1
+     }
+    },
+    {
+     "n": "磁能臂",
+     "a": 8,
+     "h": 4,
+     "s": 3,
+     "race": "mech",
+     "part": "arm",
+     "k": "w",
+     "chargeMax": 2,
+     "chargeFx": "rally",
+     "chargeA": 1,
+     "chargeH": 1,
+     "atkSk": {
+      "e": "self-race-buff",
+      "race": "mech",
+      "a": 1,
+      "h": 1
+     }
+    },
+    {
+     "n": "推进肢体",
+     "a": 3,
+     "h": 12,
+     "s": 3,
+     "race": "mech",
+     "part": "leg",
+     "k": "t",
+     "modDmg": 2,
+     "chargeMax": 3,
+     "chargeFx": "heal",
+     "sk": {
+      "t": "on-dmg",
+      "e": "self-buff",
+      "a": 1,
+      "h": 2
+     }
+    },
+    {
+     "n": "血裔猎手",
+     "a": 3,
+     "h": 3,
+     "s": 3,
+     "race": "vampire",
+     "sk": {
+      "t": "on-dmg",
+      "e": "race-buff",
+      "race": "vampire",
+      "a": 1,
+      "h": 1
+     },
+     "atkSk": {
+      "e": "self-race-buff",
+      "race": "vampire",
+      "a": 1,
+      "h": 1
+     }
+    },
+    {
+     "n": "赌徒",
+     "a": 2,
+     "h": 3,
+     "s": 3,
+     "race": "gambler",
+     "sk": {
+      "t": "start",
+      "e": "gamble",
+      "scope": "rnd",
+      "a": 2,
+      "h": 2
+     }
+    },
+    {
+     "n": "进化幼体",
+     "a": 2,
+     "h": 2,
+     "s": 3,
+     "race": "evolve",
+     "sk": {
+      "t": "start",
+      "e": "evolve",
+      "need": 2,
+      "maxD": 3,
+      "a": 2,
+      "h": 2
+     },
+     "scSk": {
+      "t": "spell-cast",
+      "e": "self-buff",
+      "a": 1,
+      "h": 1
+     }
+    },
+    {
+     "n": "孵化体",
+     "a": 2,
+     "h": 2,
+     "s": 3,
+     "race": "evolve",
+     "sk": {
+      "t": "battle",
+      "e": "progress"
+     }
+    }
+   ]
+  },
+  {
+   "star": 4,
+   "cards": [
+    {
+     "n": "重装步兵",
+     "a": 3,
+     "h": 5,
+     "k": "t",
+     "s": 4
+    },
+    {
+     "n": "战歌指挥官",
+     "a": 4,
+     "h": 5,
+     "s": 4
+    },
+    {
+     "n": "冰风雪人",
+     "a": 5,
+     "h": 7,
+     "race": "elem",
+     "sk": {
+      "t": "spell-cast",
+      "e": "spell-race-grow",
+      "race": "elem",
+      "a": 2,
+      "h": 2,
+      "grow": 1,
+      "max": 3
+     },
+     "s": 4
+    },
+    {
+     "n": "风怒鹰身人",
+     "a": 3,
+     "h": 4,
+     "k": "w",
+     "s": 4
+    },
+    {
+     "n": "吸血蚊",
+     "a": 3,
+     "h": 3,
+     "race": "vampire",
+     "k": "l",
+     "sk": {
+      "t": "attack",
+      "e": "race-heal"
+     },
+     "s": 4
+    },
+    {
+     "n": "龙裔突击者",
+     "a": 3,
+     "h": 4,
+     "s": 4,
+     "race": "dragon",
+     "sk": {
+      "t": "attack",
+      "e": "race-buff",
+      "race": "dragon",
+      "a": 1,
+      "h": 1
+     }
+    },
+    {
+     "n": "翻倍能手",
+     "a": 3,
+     "h": 4,
+     "s": 4,
+     "race": "gambler",
+     "sk": {
+      "t": "start",
+      "e": "gamble",
+      "scope": "race",
+      "a": 4,
+      "h": 4
+     }
+    },
+    {
+     "n": "瘟疫僵尸",
+     "a": 3,
+     "h": 5,
+     "s": 4,
+     "race": "undead",
+     "sk": {
+      "t": "death",
+      "e": "rnd-race-buff",
+      "race": "undead",
+      "a": 1,
+      "h": 1
+     }
+    },
+    {
+     "n": "元素商人",
+     "a": 4,
+     "h": 6,
+     "s": 4,
+     "race": "elem",
+     "sk": {
+      "t": "start",
+      "e": "shop-buff",
+      "race": "elem",
+      "a": 2,
+      "h": 2,
+      "spellRefresh": 2
+     }
+    },
+    {
+     "n": "元素核心",
+     "a": 4,
+     "h": 8,
+     "race": "elem",
+     "sk": {
+      "t": "spell-cast",
+      "e": "spell-core",
+      "race": "elem",
+      "a": 2,
+      "h": 2,
+      "raceA": 2,
+      "raceH": 2
+     },
+     "s": 4
+    },
+    {
+     "n": "元素秘典",
+     "a": 3,
+     "h": 6,
+     "race": "elem",
+     "sk": {
+      "t": "start",
+      "e": "spell-boost-grow",
+      "a": 1,
+      "h": 1,
+      "grow": 1
+     },
+     "s": 4
+    },
+    {
+     "n": "血祭司祭",
+     "a": 5,
+     "h": 8,
+     "s": 4,
+     "race": "sacrifice",
+     "sk": {
+      "t": "start",
+      "e": "debt-payoff",
+      "a": 1,
+      "h": 1
+     }
+    },
+    {
+     "n": "装甲模块",
+     "a": 4,
+     "h": 6,
+     "race": "mech",
+     "material": 1,
+     "magA": 0,
+     "magH": 8,
+     "magK": "t",
+     "magDesc": "磁力强化:为合体部件+0/+8并给予嘲讽",
+     "s": 4
+    }
+   ]
+  },
+  {
+   "star": 5,
+   "cards": [
+    {
+     "n": "大酋长",
+     "a": 5,
+     "h": 5,
+     "race": "demon",
+     "sk": {
+      "t": "on-dmg",
+      "e": "self-buff",
+      "a": 1,
+      "h": 1
+     },
+     "s": 5
+    },
+    {
+     "n": "憎恶",
+     "a": 4,
+     "h": 6,
+     "race": "undead",
+     "k": "tp",
+     "s": 5
+    },
+    {
+     "n": "大法师学徒",
+     "a": 4,
+     "h": 5,
+     "race": "elem",
+     "k": "b",
+     "bc": {
+      "e": "spell-boost",
+      "a": 2,
+      "h": 2
+     },
+     "s": 5
+    },
+    {
+     "n": "成长守卫",
+     "a": 2,
+     "h": 6,
+     "sk": {
+      "t": "start",
+      "e": "growth-self"
+     },
+     "s": 5
+    },
+    {
+     "n": "作战傀儡",
+     "a": 6,
+     "h": 4,
+     "k": "d",
+     "s": 5
+    },
+    {
+     "n": "磁暴模块",
+     "a": 5,
+     "h": 3,
+     "s": 5,
+     "race": "mech",
+     "material": 1,
+     "magA": 10,
+     "magH": 0,
+     "magK": "w",
+     "magDesc": "磁力强化:为合体部件+10攻并给予风怒"
+    },
+    {
+     "n": "维修输送车",
+     "a": 6,
+     "h": 10,
+     "race": "mech",
+     "support": "repair",
+     "sk": {
+      "t": "passive",
+      "e": "mech-info",
+      "txt": "维修输送:每次磁力喂料积累本次生命强化50%为维修护甲"
+     },
+     "s": 5
+    },
+    {
+     "n": "骷髅召唤者",
+     "a": 3,
+     "h": 4,
+     "s": 5,
+     "race": "undead",
+     "sk": {
+      "t": "death",
+      "e": "summon",
+      "count": 2
+     }
+    },
+    {
+     "n": "恶魔商贩",
+     "a": 4,
+     "h": 6,
+     "s": 5,
+     "race": "demon",
+     "sk": {
+      "t": "start",
+      "e": "shop-buff",
+      "a": 2,
+      "h": 2
+     }
+    },
+    {
+     "n": "吞噬魔",
+     "a": 4,
+     "h": 6,
+     "s": 5,
+     "race": "demon",
+     "sk": {
+      "t": "start",
+      "e": "devour-shop"
+     }
+    },
+    {
+     "n": "血族圣疗者",
+     "a": 4,
+     "h": 5,
+     "s": 5,
+     "race": "vampire",
+     "sk": {
+      "t": "attack",
+      "e": "heal-race",
+      "race": "vampire",
+      "a": 1,
+      "h": 1,
+      "mh": 1
+     }
+    },
+    {
+     "n": "星灵斗士",
+     "a": 3,
+     "h": 6,
+     "s": 5,
+     "race": "star",
+     "sk": {
+      "t": "attack",
+      "e": "chain-dmg"
+     }
+    }
+   ]
+  },
+  {
+   "star": 6,
+   "cards": [
+    {
+     "n": "大秘术师",
+     "a": 6,
+     "h": 10,
+     "race": "elem",
+     "sk": {
+      "t": "spell-cast",
+      "e": "growth-boost"
+     },
+     "s": 6
+    },
+    {
+     "n": "龙鳞壁垒",
+     "a": 12,
+     "h": 12,
+     "race": "dragon",
+     "k": "t",
+     "sk": {
+      "t": "on-dmg",
+      "e": "self-buff",
+      "a": 1,
+      "h": 2,
+      "grow": 1,
+      "regenTaunt": 1
+     },
+     "s": 6
+    },
+    {
+     "n": "时光祝福者",
+     "a": 6,
+     "h": 8,
+     "sk": {
+      "t": "start",
+      "e": "ally-all-buff"
+     },
+     "s": 6
+    },
+    {
+     "n": "绿龙",
+     "a": 8,
+     "h": 14,
+     "race": "dragon",
+     "sk": {
+      "t": "start",
+      "e": "dragon-aura",
+      "times": 2
+     },
+     "s": 6
+    },
+    {
+     "n": "龙威号角",
+     "a": 12,
+     "h": 12,
+     "race": "dragon",
+     "sk": {
+      "t": "start",
+      "e": "dragon-aura-minor",
+      "a": 1,
+      "h": 1
+     },
+     "s": 6
+    },
+    {
+     "n": "星辰编织者",
+     "a": 6,
+     "h": 7,
+     "s": 6,
+     "race": "star",
+     "sk": {
+      "t": "start",
+      "e": "race-buff",
+      "race": "star",
+      "a": 2,
+      "h": 2,
+      "grow": 1,
+      "statScale": 0.5
+     }
+    },
+    {
+     "n": "星灵回响者",
+     "a": 5,
+     "h": 8,
+     "s": 6,
+     "race": "star",
+     "sk": {
+      "t": "aura",
+      "e": "star-echo"
+     }
+    },
+    {
+     "n": "血族伯爵",
+     "a": 5,
+     "h": 6,
+     "s": 6,
+     "race": "vampire",
+     "sk": {
+      "t": "on-dmg",
+      "e": "maxhp-buff",
+      "a": 2,
+      "h": 2,
+      "spellMh": 1
+     }
+    },
+    {
+     "n": "幸运之星",
+     "a": 5,
+     "h": 6,
+     "s": 6,
+     "race": "gambler",
+     "sk": {
+      "t": "start",
+      "e": "gamble",
+      "scope": "all",
+      "a": 5,
+      "h": 5
+     }
+    },
+    {
+     "n": "进化大师",
+     "a": 5,
+     "h": 6,
+     "s": 6,
+     "race": "evolve",
+     "sk": {
+      "t": "start",
+      "e": "evo-advance",
+      "a": 1,
+      "h": 1,
+      "grow": 1
+     }
+    },
+    {
+     "n": "祭坛大师",
+     "a": 6,
+     "h": 6,
+     "s": 6,
+     "race": "sacrifice",
+     "sk": {
+      "t": "start",
+      "e": "death-race-buff",
+      "race": "sacrifice",
+      "a": 1,
+      "h": 1,
+      "debtMax": 1
+     }
+    },
+    {
+     "n": "血之庇护者",
+     "a": 5,
+     "h": 8,
+     "s": 6,
+     "race": "vampire",
+     "sk": {
+      "t": "lockhp",
+      "e": "lockhp",
+      "healMh": 1
+     }
+    },
+    {
+     "n": "食骸者",
+     "a": 4,
+     "h": 6,
+     "s": 6,
+     "race": "sacrifice",
+     "sk": {
+      "t": "death",
+      "e": "inherit",
+      "times": 1,
+      "rate": 0.0445,
+      "debt": 0.055
+     }
+    },
+    {
+     "n": "死亡颂唱者",
+     "a": 6,
+     "h": 7,
+     "s": 6,
+     "race": "undead",
+     "sk": {
+      "t": "death",
+      "e": "race-buff",
+      "race": "undead",
+      "a": 1,
+      "h": 1,
+      "sum": "general"
+     },
+     "scSk": {
+      "t": "spell-cast",
+      "e": "race-buff",
+      "race": "undead",
+      "a": 1,
+      "h": 1
+     }
+    },
+    {
+     "n": "永夜骨王",
+     "a": 6,
+     "h": 6,
+     "s": 6,
+     "race": "undead",
+     "sk": {
+      "t": "start",
+      "e": "undead-rebirth",
+      "a": 2,
+      "h": 2,
+      "grow": 1
+     }
+    },
+    {
+     "n": "滚债行者",
+     "a": 7,
+     "h": 12,
+     "s": 6,
+     "race": "sacrifice",
+     "sk": {
+      "t": "round",
+      "e": "debt-interest",
+      "count": 1,
+      "grow": 1,
+      "selfGrow": 1
+     }
+    },
+    {
+     "n": "磁暴重臂",
+     "a": 16,
+     "h": 12,
+     "race": "mech",
+     "part": "arm",
+     "k": "w",
+     "modAtk": 5,
+     "chargeMax": 2,
+     "chargeFx": "rally",
+     "chargeA": 2,
+     "chargeH": 2,
+     "atkSk": {
+      "e": "self-race-buff",
+      "race": "mech",
+      "a": 1,
+      "h": 1
+     },
+     "sk": {
+      "t": "passive",
+      "e": "mech-info",
+      "txt": "武装过载:磁力喂料攻击强化翻倍；每2次喂料合体体额外攻击+1（最多+2）"
+     },
+     "s": 6
+    },
+    {
+     "n": "超载模块",
+     "a": 6,
+     "h": 6,
+     "s": 6,
+     "race": "mech",
+     "material": 1,
+     "magA": 10,
+     "magH": 10,
+     "magDesc": "磁力强化:为合体部件+10/+10"
+    },
+    {
+     "n": "磁力供给技师",
+     "a": 5,
+     "h": 9,
+     "s": 6,
+     "race": "mech",
+     "support": "supply",
+     "sk": {
+      "t": "round",
+      "e": "mech-supply",
+      "count": 1
+     }
+    }
+   ]
+  },
+  {
+   "star": 7,
+   "cards": [
+    {
+     "n": "秘法主宰",
+     "a": 8,
+     "h": 10,
+     "race": "elem",
+     "sk": {
+      "t": "spell-cast",
+      "e": "ally-all-buff",
+      "d": 1
+     },
+     "s": 7
+    },
+    {
+     "n": "秘法巨龙",
+     "a": 10,
+     "h": 14,
+     "race": "dragon",
+     "sk": {
+      "t": "start",
+      "e": "growth-self",
+      "times": 4
+     },
+     "sc": {
+      "t": "spell-cast",
+      "e": "self-growth-boost",
+      "times": 1
+     },
+     "s": 7
+    },
+    {
+     "n": "铸币巨兽",
+     "a": 10,
+     "h": 12,
+     "race": "demon",
+     "sk": {
+      "t": "gold",
+      "e": "coin-spell-boost"
+     },
+     "s": 7
+    },
+    {
+     "n": "龙袭卫士",
+     "a": 10,
+     "h": 14,
+     "race": "dragon",
+     "sk": {
+      "t": "aura",
+      "e": "atk-react",
+      "a": 2,
+      "h": 2
+     },
+     "s": 7
+    },
+    {
+     "n": "亚煞极",
+     "a": 16,
+     "h": 16,
+     "race": "demon",
+     "sk": {
+      "t": "on-dmg",
+      "e": "self-buff",
+      "a": 2,
+      "h": 2
+     },
+     "scSk": {
+      "t": "spell-cast",
+      "e": "self-buff",
+      "a": 1,
+      "h": 1
+     },
+     "s": 7
+    },
+    {
+     "n": "星界之主",
+     "a": 9,
+     "h": 9,
+     "s": 7,
+     "race": "star",
+     "sk": {
+      "t": "start",
+      "e": "star-amp"
+     }
+    },
+    {
+     "n": "统御核心",
+     "a": 14,
+     "h": 18,
+     "s": 7,
+     "race": "mech",
+     "part": "head",
+     "k": "w",
+     "modGrow": 4,
+     "chargeMax": 2,
+     "chargeFx": "buff",
+     "chargeA": 4,
+     "chargeH": 4,
+     "atkSk": {
+      "e": "self-race-buff",
+      "race": "mech",
+      "a": 3,
+      "h": 3
+     },
+     "sk": {
+      "t": "passive",
+      "e": "mech-info",
+      "txt": "磁力主脑:每次磁力喂料，头部成长永久+1；攻击后自身成长"
+     }
+    },
+    {
+     "n": "血之主",
+     "a": 9,
+     "h": 9,
+     "s": 7,
+     "race": "vampire",
+     "sk": {
+      "t": "on-dmg",
+      "e": "race-buff",
+      "race": "vampire",
+      "a": 3,
+      "h": 3,
+      "grow": 1
+     }
+    },
+    {
+     "n": "命运赌王",
+     "a": 8,
+     "h": 8,
+     "s": 7,
+     "race": "gambler",
+     "sk": {
+      "t": "start",
+      "e": "gamble",
+      "scope": "all",
+      "a": 6,
+      "h": 6
+     }
+    },
+    {
+     "n": "终极进化体",
+     "a": 8,
+     "h": 8,
+     "s": 7,
+     "race": "evolve",
+     "sk": {
+      "t": "on-dmg",
+      "e": "evolve",
+      "need": 3,
+      "maxC": 3
+     }
+    },
+    {
+     "n": "万灵之主",
+     "a": 10,
+     "h": 10,
+     "s": 7,
+     "race": "sacrifice",
+     "bc": {
+      "e": "self",
+      "a": 4,
+      "h": 4
+     },
+     "sk": {
+      "t": "start",
+      "e": "debt-lord",
+      "a": 4,
+      "h": 4
+     }
+    },
+    {
+     "n": "巫妖王",
+     "a": 8,
+     "h": 10,
+     "s": 7,
+     "race": "undead",
+     "sk": {
+      "t": "death",
+      "e": "race-buff",
+      "race": "undead",
+      "a": 2,
+      "h": 2
+     }
+    },
+    {
+     "n": "地狱魔龙",
+     "a": 8,
+     "h": 8,
+     "s": 7,
+     "race": "demon",
+     "sk": {
+      "t": "start",
+      "e": "multihit"
+     }
+    },
+    {
+     "n": "机械泰坦",
+     "a": 18,
+     "h": 32,
+     "s": 7,
+     "race": "mech",
+     "part": "core",
+     "k": "dt",
+     "headDouble": 1,
+     "modShield": 1,
+     "chargeMax": 3,
+     "chargeFx": "rally",
+     "chargeA": 3,
+     "chargeH": 3,
+     "mechTitan": 1,
+     "sk": {
+      "t": "passive",
+      "e": "mech-info",
+      "txt": "磁力引擎:每次磁力喂料，被强化部件额外获得30%攻击强化；每3次喂料协同随从展开圣盾"
+     }
+    },
+    {
+     "n": "泰坦覆足",
+     "a": 16,
+     "h": 38,
+     "s": 7,
+     "race": "mech",
+     "part": "leg",
+     "k": "td",
+     "modShield": 1,
+     "modDmg": 6,
+     "chargeMax": 3,
+     "chargeFx": "rally",
+     "chargeA": 3,
+     "chargeH": 3,
+     "sk": {
+      "t": "on-dmg",
+      "e": "race-buff",
+      "race": "mech",
+      "a": 3,
+      "h": 3
+     }
+    },
+    {
+     "n": "超导装配中枢",
+     "a": 8,
+     "h": 12,
+     "s": 7,
+     "race": "mech",
+     "support": "super",
+     "sk": {
+      "t": "passive",
+      "e": "mech-info",
+      "txt": "超导装配:磁力喂料效果强化1.5倍（金2.5倍），35%扩散（金60%），每次喂料后后续材料强化+1/+1（金+2/+2）"
+     }
+    },
+    {
+     "n": "豪赌大师",
+     "a": 8,
+     "h": 8,
+     "s": 7,
+     "race": "gambler",
+     "sk": {
+      "t": "start",
+      "e": "gamble",
+      "scope": "all",
+      "a": 8,
+      "h": 8,
+      "succ": 0.5,
+      "ml": 2,
+      "mh": 4
+     }
+    },
+    {
+     "n": "献祭图腾",
+     "a": 6,
+     "h": 8,
+     "s": 7,
+     "race": "sacrifice",
+     "sk": {
+      "t": "passive",
+      "e": "debt-totem"
+     }
+    }
+   ]
+  }
+ ]
+}
