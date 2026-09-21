@@ -6,79 +6,274 @@
    "id": "plain_stats",
    "name": "数值对抗",
    "seed": 12345,
-   "p": [{"n": "大个", "a": 3, "h": 3, "s": 1, "race": "elem"}],
-   "e": [{"n": "小个", "a": 2, "h": 2, "s": 1, "race": "elem"}]
+   "p": [
+    {
+     "n": "大个",
+     "a": 3,
+     "h": 3,
+     "s": 1,
+     "race": "elem"
+    }
+   ],
+   "e": [
+    {
+     "n": "小个",
+     "a": 2,
+     "h": 2,
+     "s": 1,
+     "race": "elem"
+    }
+   ]
   },
   {
    "id": "taunt_guard",
    "name": "嘲讽优先",
    "seed": 777,
-   "p": [{"n": "打手", "a": 2, "h": 30, "s": 1, "race": "elem"}],
+   "p": [
+    {
+     "n": "打手",
+     "a": 2,
+     "h": 30,
+     "s": 1,
+     "race": "elem"
+    }
+   ],
    "e": [
-    {"n": "盾卫", "a": 0, "h": 10, "s": 1, "race": "elem", "k": "t"},
-    {"n": "刺客", "a": 5, "h": 1, "s": 1, "race": "elem"}
+    {
+     "n": "盾卫",
+     "a": 0,
+     "h": 10,
+     "s": 1,
+     "race": "elem",
+     "k": "t"
+    },
+    {
+     "n": "刺客",
+     "a": 5,
+     "h": 1,
+     "s": 1,
+     "race": "elem"
+    }
    ]
   },
   {
    "id": "shield_absorb",
    "name": "圣盾吸伤",
    "seed": 4242,
-   "p": [{"n": "打手", "a": 5, "h": 40, "s": 1, "race": "elem"}],
-   "e": [{"n": "圣盾兵", "a": 1, "h": 10, "s": 1, "race": "elem", "k": "d"}]
+   "p": [
+    {
+     "n": "打手",
+     "a": 5,
+     "h": 40,
+     "s": 1,
+     "race": "elem"
+    }
+   ],
+   "e": [
+    {
+     "n": "圣盾兵",
+     "a": 1,
+     "h": 10,
+     "s": 1,
+     "race": "elem",
+     "k": "d"
+    }
+   ]
   },
   {
    "id": "windfury_double",
    "name": "风怒双击",
    "seed": 99,
-   "p": [{"n": "风怒兵", "a": 2, "h": 30, "s": 1, "race": "elem", "k": "w"}],
-   "e": [{"n": "木桩", "a": 0, "h": 9, "s": 1, "race": "elem"}]
+   "p": [
+    {
+     "n": "风怒兵",
+     "a": 2,
+     "h": 30,
+     "s": 1,
+     "race": "elem",
+     "k": "w"
+    }
+   ],
+   "e": [
+    {
+     "n": "木桩",
+     "a": 0,
+     "h": 9,
+     "s": 1,
+     "race": "elem"
+    }
+   ]
   },
   {
    "id": "poison_kill",
    "name": "剧毒斩杀",
    "seed": 313,
-   "p": [{"n": "毒刺", "a": 1, "h": 20, "s": 1, "race": "elem", "k": "p"}],
-   "e": [{"n": "巨型木桩", "a": 0, "h": 50, "s": 1, "race": "elem"}]
+   "p": [
+    {
+     "n": "毒刺",
+     "a": 1,
+     "h": 20,
+     "s": 1,
+     "race": "elem",
+     "k": "p"
+    }
+   ],
+   "e": [
+    {
+     "n": "巨型木桩",
+     "a": 0,
+     "h": 50,
+     "s": 1,
+     "race": "elem"
+    }
+   ]
   },
   {
    "id": "evolve_attack_line",
    "name": "进化条（攻击线）",
    "seed": 5,
-   "p": [{"n": "细胞体", "a": 10, "h": 40, "s": 1, "race": "evolve",
-     "sk": {"t": "attack", "e": "evolve-step", "need": 3, "a": 4, "h": 4}}],
-   "e": [{"n": "木桩", "a": 0, "h": 400, "s": 1, "race": "elem"}]
+   "p": [
+    {
+     "n": "细胞体",
+     "a": 10,
+     "h": 40,
+     "s": 1,
+     "race": "evolve",
+     "sk": {
+      "t": "attack",
+      "e": "evolve-step",
+      "need": 3,
+      "a": 4,
+      "h": 4
+     }
+    }
+   ],
+   "e": [
+    {
+     "n": "木桩",
+     "a": 0,
+     "h": 400,
+     "s": 1,
+     "race": "elem"
+    }
+   ]
   },
   {
    "id": "evolve_on_dmg_line",
    "name": "进化条（受击线）",
    "seed": 21,
-   "p": [{"n": "终极进化体", "a": 4, "h": 60, "s": 7, "race": "evolve",
-     "sk": {"t": "on-dmg", "e": "evolve", "need": 3, "maxC": 3}}],
-   "e": [{"n": "打手", "a": 3, "h": 300, "s": 1, "race": "elem"}]
+   "p": [
+    {
+     "n": "终极进化体",
+     "a": 4,
+     "h": 60,
+     "s": 7,
+     "race": "evolve",
+     "sk": {
+      "t": "on-dmg",
+      "e": "evolve",
+      "need": 3,
+      "maxC": 3
+     }
+    }
+   ],
+   "e": [
+    {
+     "n": "打手",
+     "a": 3,
+     "h": 300,
+     "s": 1,
+     "race": "elem"
+    }
+   ]
   },
   {
    "id": "evo_advance_support",
    "name": "进化大师推进器",
    "seed": 66,
    "p": [
-    {"n": "进化大师", "a": 5, "h": 6, "s": 6, "race": "evolve",
-     "sk": {"t": "start", "e": "evo-advance", "a": 1, "h": 1}},
-    {"n": "细胞体", "a": 10, "h": 40, "s": 1, "race": "evolve",
-     "sk": {"t": "attack", "e": "evolve-step", "need": 3, "a": 4, "h": 4}}
+    {
+     "n": "进化大师",
+     "a": 5,
+     "h": 6,
+     "s": 6,
+     "race": "evolve",
+     "sk": {
+      "t": "start",
+      "e": "evo-advance",
+      "a": 1,
+      "h": 1
+     }
+    },
+    {
+     "n": "细胞体",
+     "a": 10,
+     "h": 40,
+     "s": 1,
+     "race": "evolve",
+     "sk": {
+      "t": "attack",
+      "e": "evolve-step",
+      "need": 3,
+      "a": 4,
+      "h": 4
+     }
+    }
    ],
-   "e": [{"n": "木桩", "a": 0, "h": 400, "s": 1, "race": "elem"}]
+   "e": [
+    {
+     "n": "木桩",
+     "a": 0,
+     "h": 400,
+     "s": 1,
+     "race": "elem"
+    }
+   ]
   },
   {
    "id": "gene_lord",
    "name": "混沌始祖吞噬质变",
    "seed": 8888,
    "p": [
-    {"n": "混沌始祖", "a": 20, "h": 20, "s": 7, "race": "evolve",
-     "sk": {"t": "start", "e": "evo-devourer", "a": 2, "h": 2, "team": 1, "max": 5}},
-    {"n": "细胞体", "a": 10, "h": 40, "s": 1, "race": "evolve",
-     "sk": {"t": "attack", "e": "evolve-step", "need": 3, "a": 4, "h": 4}}
+    {
+     "n": "混沌始祖",
+     "a": 20,
+     "h": 20,
+     "s": 7,
+     "race": "evolve",
+     "sk": {
+      "t": "start",
+      "e": "evo-devourer",
+      "a": 2,
+      "h": 2,
+      "team": 1,
+      "max": 5
+     }
+    },
+    {
+     "n": "细胞体",
+     "a": 10,
+     "h": 40,
+     "s": 1,
+     "race": "evolve",
+     "sk": {
+      "t": "attack",
+      "e": "evolve-step",
+      "need": 3,
+      "a": 4,
+      "h": 4
+     }
+    }
    ],
-   "e": [{"n": "木桩", "a": 0, "h": 400, "s": 1, "race": "elem"}]
+   "e": [
+    {
+     "n": "木桩",
+     "a": 0,
+     "h": 400,
+     "s": 1,
+     "race": "elem"
+    }
+   ]
   },
   {
    "id": "debt_settle",
@@ -87,12 +282,47 @@
    "round": 9,
    "debtP": 20,
    "p": [
-    {"n": "血祭司祭", "a": 5, "h": 8, "s": 4, "race": "sacrifice",
-     "sk": {"t": "start", "e": "debt-payoff", "a": 1, "h": 1}},
-    {"n": "祭品", "a": 10, "h": 10, "s": 3, "race": "sacrifice"},
-    {"n": "献祭图腾", "a": 6, "h": 8, "s": 7, "race": "sacrifice", "sk": {"t": "passive", "e": "debt-totem"}}
+    {
+     "n": "血祭司祭",
+     "a": 5,
+     "h": 8,
+     "s": 4,
+     "race": "sacrifice",
+     "sk": {
+      "t": "start",
+      "e": "debt-payoff",
+      "a": 1,
+      "h": 1
+     }
+    },
+    {
+     "n": "祭品",
+     "a": 10,
+     "h": 10,
+     "s": 3,
+     "race": "sacrifice"
+    },
+    {
+     "n": "献祭图腾",
+     "a": 6,
+     "h": 8,
+     "s": 7,
+     "race": "sacrifice",
+     "sk": {
+      "t": "passive",
+      "e": "debt-totem"
+     }
+    }
    ],
-   "e": [{"n": "木桩", "a": 0, "h": 300, "s": 1, "race": "elem"}]
+   "e": [
+    {
+     "n": "木桩",
+     "a": 0,
+     "h": 300,
+     "s": 1,
+     "race": "elem"
+    }
+   ]
   },
   {
    "id": "debt_contract_death",
@@ -101,12 +331,47 @@
    "round": 5,
    "contractP": 3,
    "p": [
-    {"n": "债务执事", "a": 4, "h": 200, "s": 3, "race": "sacrifice",
-     "sk": {"t": "death", "e": "debt-boost", "a": 3, "h": 3}},
-    {"n": "献祭图腾", "a": 6, "h": 200, "s": 7, "race": "sacrifice", "sk": {"t": "passive", "e": "debt-totem"}},
-    {"n": "契印目标", "a": 10, "h": 10, "s": 3, "race": "sacrifice"}
+    {
+     "n": "债务执事",
+     "a": 4,
+     "h": 200,
+     "s": 3,
+     "race": "sacrifice",
+     "sk": {
+      "t": "death",
+      "e": "debt-boost",
+      "a": 3,
+      "h": 3
+     }
+    },
+    {
+     "n": "献祭图腾",
+     "a": 6,
+     "h": 200,
+     "s": 7,
+     "race": "sacrifice",
+     "sk": {
+      "t": "passive",
+      "e": "debt-totem"
+     }
+    },
+    {
+     "n": "契印目标",
+     "a": 10,
+     "h": 10,
+     "s": 3,
+     "race": "sacrifice"
+    }
    ],
-   "e": [{"n": "杀手", "a": 30, "h": 200, "s": 1, "race": "elem"}]
+   "e": [
+    {
+     "n": "杀手",
+     "a": 30,
+     "h": 200,
+     "s": 1,
+     "race": "elem"
+    }
+   ]
   },
   {
    "id": "star_chain_burst",
@@ -114,23 +379,109 @@
    "seed": 31,
    "nondeterministic": "敌方随机选敌：两端 RNG 流不同，存活者会不同；只对比胜负/连锁等确定性结果",
    "p": [
-    {"n": "星象观测者", "a": 2, "h": 4, "s": 2, "race": "star", "sk": {"t": "start", "e": "chain-start"}},
-    {"n": "星灵斗士", "a": 3, "h": 6, "s": 5, "race": "star", "sk": {"t": "attack", "e": "chain-dmg"}},
-    {"n": "星灵回响者", "a": 5, "h": 8, "s": 6, "race": "star", "sk": {"t": "aura", "e": "star-echo"}},
-    {"n": "星界之主", "a": 9, "h": 9, "s": 7, "race": "star", "sk": {"t": "start", "e": "star-amp"}}
+    {
+     "n": "星象观测者",
+     "a": 2,
+     "h": 4,
+     "s": 2,
+     "race": "star",
+     "sk": {
+      "t": "start",
+      "e": "chain-start"
+     }
+    },
+    {
+     "n": "星灵斗士",
+     "a": 3,
+     "h": 6,
+     "s": 5,
+     "race": "star",
+     "sk": {
+      "t": "attack",
+      "e": "chain-dmg"
+     }
+    },
+    {
+     "n": "星灵回响者",
+     "a": 5,
+     "h": 8,
+     "s": 6,
+     "race": "star",
+     "sk": {
+      "t": "aura",
+      "e": "star-echo"
+     }
+    },
+    {
+     "n": "星界之主",
+     "a": 9,
+     "h": 9,
+     "s": 7,
+     "race": "star",
+     "sk": {
+      "t": "start",
+      "e": "star-amp"
+     }
+    }
    ],
-   "e": [{"n": "精英杀手", "a": 20, "h": 70, "s": 3, "race": "elem"}]
+   "e": [
+    {
+     "n": "精英杀手",
+     "a": 20,
+     "h": 70,
+     "s": 3,
+     "race": "elem"
+    }
+   ]
   },
   {
    "id": "star_amp_stack",
    "name": "星界增幅叠加",
    "seed": 77,
    "p": [
-    {"n": "星界之主", "a": 9, "h": 40, "s": 7, "race": "star", "sk": {"t": "start", "e": "star-amp"}},
-    {"n": "星界之主", "a": 9, "h": 40, "s": 7, "race": "star", "sk": {"t": "start", "e": "star-amp"}},
-    {"n": "星灵斗士", "a": 3, "h": 40, "s": 5, "race": "star", "sk": {"t": "attack", "e": "chain-dmg"}}
+    {
+     "n": "星界之主",
+     "a": 9,
+     "h": 40,
+     "s": 7,
+     "race": "star",
+     "sk": {
+      "t": "start",
+      "e": "star-amp"
+     }
+    },
+    {
+     "n": "星界之主",
+     "a": 9,
+     "h": 40,
+     "s": 7,
+     "race": "star",
+     "sk": {
+      "t": "start",
+      "e": "star-amp"
+     }
+    },
+    {
+     "n": "星灵斗士",
+     "a": 3,
+     "h": 40,
+     "s": 5,
+     "race": "star",
+     "sk": {
+      "t": "attack",
+      "e": "chain-dmg"
+     }
+    }
    ],
-   "e": [{"n": "木桩", "a": 1, "h": 220, "s": 1, "race": "elem"}]
+   "e": [
+    {
+     "n": "木桩",
+     "a": 1,
+     "h": 220,
+     "s": 1,
+     "race": "elem"
+    }
+   ]
   }
  ]
 }

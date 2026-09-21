@@ -27,6 +27,9 @@ var devour_boost: int = 0
 var death_stat_a: int = 0
 var death_stat_h: int = 0
 
+# 机械：维修护甲（战斗内吸收伤害）
+var armor := {"p": 0, "e": 0}
+
 # 星灵连锁
 var chain := {"p": 0, "e": 0}
 var star_amp := {"p": 0, "e": 0}
@@ -49,6 +52,7 @@ func resolve(p_board: Array, e_board: Array, seed_value: int = 1, max_rounds: in
 		debt_pay_bonus[side] = 1.0
 		chain[side] = int(opts.get("chain" + suffix, 0))
 		star_amp[side] = int(opts.get("amp" + suffix, 0))
+		armor[side] = int(opts.get("armor" + suffix, 0))
 	var boards := {SIDE_P: _clean(p_board), SIDE_E: _clean(e_board)}
 	# 顺序与 Web 一致：同族共鸣 → 再快照债务结算基准（血祭司祭/祭坛大师的攻击/生命）
 	_apply_race_synergy(SIDE_P, boards)
@@ -93,6 +97,8 @@ func resolve(p_board: Array, e_board: Array, seed_value: int = 1, max_rounds: in
 		"debt_e": int(debt[SIDE_E]),
 		"chain_p": int(chain[SIDE_P]),
 		"chain_e": int(chain[SIDE_E]),
+		"armor_p": int(armor[SIDE_P]),
+		"armor_e": int(armor[SIDE_E]),
 	}
 
 func _clean(board: Array) -> Array:
@@ -165,6 +171,13 @@ func _attack(attacker, target, side: String, foe: String, boards: Dictionary, fi
 	if target.taunt_active:
 		target.taunt_active = false
 		_emit({"t": "taunt_break", "id": target.uid})
+	var absorbed := 0
+	if int(armor[foe]) > 0 and dmg > 0:
+		absorbed = min(dmg, int(armor[foe]))
+		armor[foe] = int(armor[foe]) - absorbed
+		dmg -= absorbed
+		_emit({"t": "armor", "side": foe, "absorbed": absorbed, "left": int(armor[foe])})
+		_log("维修护甲吸收 %d（剩余 %d）" % [absorbed, int(armor[foe])])
 	if dmg > 0:
 		target.hp -= dmg
 		_emit({"t": "damage", "src": attacker.uid, "dst": target.uid, "dmg": dmg, "hp": max(0, target.hp)})
@@ -177,6 +190,7 @@ func _attack(attacker, target, side: String, foe: String, boards: Dictionary, fi
 	_after_attack_star(attacker, side, foe, boards)
 
 func _on_attacked(u, side: String, boards: Dictionary) -> void:
+	_charge_tick(u, side, boards)
 	var sk: Dictionary = u.skill
 	if sk.is_empty():
 		return
@@ -197,6 +211,7 @@ func _on_attacked(u, side: String, boards: Dictionary) -> void:
 				_emit({"t": "buff", "id": ally.uid, "a": a2, "h": h2})
 
 func _on_damaged(u, side: String, foe: String, boards: Dictionary) -> void:
+	_charge_tick(u, side, boards)
 	var sk: Dictionary = u.skill
 	if sk.is_empty():
 		return
@@ -545,3 +560,43 @@ func _swing(u, side: String, foe: String, boards: Dictionary) -> void:
 		if target == null:
 			break
 		_attack(u, target, side, foe, boards, swing == 0)
+
+
+## ---------- 机械：充能 ----------
+
+func _charge_tick(u, side: String, boards: Dictionary) -> void:
+	var max_charge: int = u.charge_max
+	if max_charge <= 0:
+		return
+	var cur: int = u.charge + 1
+	u.charge = cur
+	_emit({"t": "ch", "id": u.uid, "c": cur, "cm": max_charge})
+	if cur < max_charge:
+		return
+	u.charge = 0
+	var fx: String = u.charge_fx
+	var ba: int = u.charge_a
+	var bh: int = u.charge_h
+	if bh == 0:
+		bh = ba
+	match fx:
+		"shield":
+			u.shield = true
+			_log("%s：充能完成，展开圣盾" % u.card_name)
+		"heal":
+			var hv: int = max(1, int(floor(float(u.max_hp) * 0.15)))
+			var old: int = u.hp
+			u.hp = min(u.hp + hv, u.max_hp)
+			_emit({"t": "heal", "id": u.uid, "val": u.hp - old})
+			_log("%s：充能修复 %d HP" % [u.card_name, u.hp - old])
+		"rally":
+			for ally in _alive_units(boards[side]):
+				if ally.race == "mech":
+					ally.gain(max(1, ba), max(1, bh))
+					_emit({"t": "buff", "id": ally.uid, "a": max(1, ba), "h": max(1, bh)})
+			_log("%s：充能集结，全机械 +%d/+%d" % [u.card_name, max(1, ba), max(1, bh)])
+		_:
+			u.gain(ba, bh)
+			_emit({"t": "buff", "id": u.uid, "a": ba, "h": bh})
+			_log("%s：充能强化 +%d/+%d" % [u.card_name, ba, bh])
+

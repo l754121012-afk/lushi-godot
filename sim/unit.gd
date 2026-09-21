@@ -26,6 +26,13 @@ var gene: int = 0         # 混沌始祖：基因层数
 var stat_gain: int = 1    # 每格进化附带的即时收益基数
 var pay_a: int = 0        # 债务结算前的攻击快照（血祭司祭/祭坛大师）
 var pay_h: int = 0        # 债务结算前的生命快照
+var charge: int = 0       # 机械：当前充能
+var charge_max: int = 0   # 机械：充能上限
+var charge_fx: String = ""  # shield / heal / rally / buff
+var charge_a: int = 0
+var charge_h: int = 0
+var part: String = ""     # 机械合体部位：core / head / arm / leg
+var battle_armor: int = 0 # 维修护甲（战斗内吸收）
 
 static func from_card(card: Dictionary, id: int) -> RefCounted:
 	var u = preload("res://sim/unit.gd").new()
@@ -41,6 +48,11 @@ static func from_card(card: Dictionary, id: int) -> RefCounted:
 			u.keywords.append(ch)
 	u.skill = card.get("sk", {})
 	u.battlecry = card.get("bc", {})
+	u.charge_max = int(card.get("chargeMax", 0))
+	u.charge_fx = String(card.get("chargeFx", ""))
+	u.charge_a = int(card.get("chargeA", 0))
+	u.charge_h = int(card.get("chargeH", 0))
+	u.part = String(card.get("part", ""))
 	return u
 
 func has_kw(k: String) -> bool:
