@@ -279,3 +279,12 @@ lushi-godot/
 - 外边距 4px、面板最大宽 1000、按钮高 30、日志高 ~36 全部按原版数值设定
 - 对照工具：_diag_sac/compare_ui.cjs（同时输出两端坐标 + 生成并排对照图 docs/compare_ui.png）
 - 说明：模型无法直接查看图片，布局核对以"两端渲染坐标 + 顺序/不重叠断言"为准（见 prep_view.gd 的 _dump_layout）
+
+## 更新（P3-6 · 方向 B 打通 + 交接文档）
+
+- Web 版加无头开关（方向 B）：window.HEADLESS=/headless=1/.test(location.href)（用 hash，本地 server 不剥离 query）
+  + dl() 在无头时直接 resolve（跳过动画延时）→ 访问 http://localhost:8080/#headless=1
+- 验证（tools/headless_probe.cjs）：机械合体战斗无头下 **47ms** 跑完，日志确认
+  我方合体出击存活，出击等级3，零件+(12/+12)、磁暴僚机:随同攻击-10、同族共鸣:mech+1/+1 均正常
+- 新增 **SESSION-HANDOFF.md**：交接文档（仓库/环境/命令/代码地图/视觉还原状态/未完成项/约定），供新会话冷启动
+- 视觉工作的瓶颈（当前模型无法看图）与需要人工判断的清单已写入交接文档第 5 节
