@@ -152,6 +152,7 @@ func _muted(text: String, size: int = 11) -> Label:
 func _btn(text: String, bg: Color, cb: Callable) -> Button:
 	var b := Button.new()
 	b.text = text
+	b.custom_minimum_size = Vector2(0, 30)
 	b.add_theme_font_size_override("font_size", 12)
 	b.add_theme_stylebox_override("normal", _sb(bg, bg, 4))
 	b.add_theme_stylebox_override("hover", _sb(bg.lightened(0.18), C_GOLD, 4))
@@ -240,11 +241,15 @@ func _build() -> void:
 	root.set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
 	root.offset_left = _side_margin()
 	root.offset_right = -_side_margin()
+	root.offset_top = 4
+	root.offset_bottom = -4
 	root.add_theme_constant_override("separation", 3)
 	add_child(root)
 	get_viewport().size_changed.connect(func():
 		root.offset_left = _side_margin()
-		root.offset_right = -_side_margin())
+		root.offset_right = -_side_margin()
+		root.offset_top = 4
+		root.offset_bottom = -4)
 
 	root.add_child(_build_bar())
 	root.get_child(root.get_child_count() - 1).name = "bar"
@@ -290,7 +295,9 @@ func _build_bar() -> PanelContainer:
 	hb.add_child(_round_label)
 	_level_label = _muted("酒馆Lv1")
 	hb.add_child(_level_label)
-	hb.add_child(_btn("设置", C_SLOT_FILL, func(): _say("设置面板后续接入")))
+	var set_btn := _btn("设置", C_SLOT_FILL, func(): _say("设置面板后续接入"))
+	set_btn.custom_minimum_size = Vector2(0, 21)
+	hb.add_child(set_btn)
 	return bar
 
 func _build_side(title: String, is_ai: bool) -> PanelContainer:
@@ -375,7 +382,7 @@ func _build_log() -> PanelContainer:
 	_log = RichTextLabel.new()
 	_log.bbcode_enabled = true
 	_log.scroll_active = true
-	_log.custom_minimum_size = Vector2(0, 96)
+	_log.custom_minimum_size = Vector2(0, 34)
 	_log.add_theme_font_size_override("normal_font_size", 11)
 	_log.add_theme_color_override("default_color", C_MUTED)
 	p.add_child(_log)
