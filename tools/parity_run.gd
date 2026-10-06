@@ -36,6 +36,8 @@ func _init() -> void:
 			"ampE": int(sc.get("ampE", 0)),
 			"armorP": int(sc.get("armorP", 0)),
 			"armorE": int(sc.get("armorE", 0)),
+			"phaseP": int(sc.get("phaseP", 2)),
+			"phaseE": int(sc.get("phaseE", 2)),
 		}
 		var r: Dictionary = battle.resolve(p_board, e_board, int(sc.get("seed", 1)), 30, opts)
 		results.append(_summary(sc, r, p_board, e_board))
@@ -66,9 +68,25 @@ func _build(list: Array) -> Array:
 
 func _summary(sc: Dictionary, r: Dictionary, p_board: Array, e_board: Array) -> Dictionary:
 	var ev_count := {}
+	var debug := {"evolve": 0, "deaths": [], "debts": []}
 	for ev in r["events"]:
 		var k: String = String(ev["t"])
 		ev_count[k] = int(ev_count.get(k, 0)) + 1
+		if k == "evop" or k == "evo_full":
+			debug["evolve"] = int(debug["evolve"]) + 1
+		elif k == "death":
+			debug["deaths"].append({
+				"n": String(ev.get("name", "?")),
+				"a": int(ev.get("a", 0)),
+				"h": int(ev.get("h", 0)),
+				"id": int(ev.get("id", -1)),
+			})
+		elif k == "debt":
+			debug["debts"].append({
+				"side": String(ev.get("side", "")),
+				"value": int(ev.get("delta", 0)),
+				"reason": String(ev.get("reason", "")),
+			})
 	# 与 Web 版一致：败方掉血 = 胜方存活随从星级之和
 	var dmg_p := 0
 	var dmg_e := 0
@@ -92,6 +110,7 @@ func _summary(sc: Dictionary, r: Dictionary, p_board: Array, e_board: Array) -> 
 		"p": _units(p_board),
 		"e": _units(e_board),
 		"events": ev_count,
+		"debug": debug,
 	}
 
 func _star_sum(board: Array) -> int:

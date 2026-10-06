@@ -10,15 +10,31 @@ const MUTED := Color("8f98a3")
 const ACCENT := Color("fdcb6e")
 const GREEN := Color("7bed9f")
 const BLUE := Color("74b9ff")
+const SUBTLE := Color("b2bec3")
 const PURPLE := Color("a29bfe")
 const RED := Color("ff6b6b")
 
-static func cjk_font() -> Font:
+static func _system_font() -> SystemFont:
 	var f := SystemFont.new()
 	f.font_names = PackedStringArray([
-		"Microsoft YaHei UI", "Microsoft YaHei", "微软雅黑",
+		"Segoe UI", "Microsoft YaHei UI", "Microsoft YaHei", "微软雅黑",
 		"SimHei", "Noto Sans CJK SC", "Source Han Sans SC", "sans-serif",
 	])
+	f.allow_system_fallback = true
+	f.subpixel_positioning = TextServer.SUBPIXEL_POSITIONING_AUTO
+	return f
+
+static func cjk_font() -> Font:
+	return _system_font()
+
+static func cjk_font_bold() -> Font:
+	var f := _system_font()
+	f.font_weight = 700
+	return f
+
+static func symbol_font() -> Font:
+	var f := SystemFont.new()
+	f.font_names = PackedStringArray(["Segoe UI Symbol", "Segoe UI"])
 	f.allow_system_fallback = true
 	f.subpixel_positioning = TextServer.SUBPIXEL_POSITIONING_AUTO
 	return f

@@ -49,6 +49,7 @@ const PROJ = 'C:/Users/李泽文/Documents/Codex/2026-07-26/xian/lushi-godot';
       const pSide = build(sc.p), eSide = build(sc.e);
       S.b = pSide.board;
       E.b = eSide.board;
+      S.rb = {}; E.rb = {};
       S.hp = 100; E.hp = 100; S.t = 1;
       // 献祭·债务：场景可以指定契印目标（1 基序号）与初始债务
       S.t = Number(sc.round || 1);
@@ -77,8 +78,33 @@ const PROJ = 'C:/Users/李泽文/Documents/Codex/2026-07-26/xian/lushi-godot';
       R();
       const before = { S: S.hp, E: E.hp };
       const eRef = E, sRef = S;
+      const dbg = { evolve: 0, evolve_cards: {}, deaths: [], debts: [] };
+      const origEvolveTick = window.evolveTick;
+      const origOnDeath = window.onDeath;
+      const origAddDebt = window.addDebt;
+      window.evolveTick = function (m, seq) {
+        dbg.evolve += 1;
+        const key = String(m && m.n || '?');
+        dbg.evolve_cards[key] = (dbg.evolve_cards[key] || 0) + 1;
+        return origEvolveTick.apply(this, arguments);
+      };
+      window.onDeath = function () {
+        const dead = arguments[1];
+        if (dead) dbg.deaths.push({ n: dead.n, a: dead.a, h: dead.h, id: dead.id });
+        return origOnDeath.apply(this, arguments);
+      };
+      window.addDebt = function () {
+        const side = arguments[0], value = arguments[1], quiet = arguments[2];
+        dbg.debts.push({ side, value, quiet });
+        return origAddDebt.apply(this, arguments);
+      };
 
       try { await ft(); } catch (e) { Math.random = origRandom; return { id: sc.id, error: String(e && e.message || e) }; }
+      finally {
+        window.evolveTick = origEvolveTick;
+        window.onDeath = origOnDeath;
+        window.addDebt = origAddDebt;
+      }
       const hpRightAfterFt = { p: S.hp, e: E.hp };
       const refCheck = { sameE: eRef === E, sameS: sRef === S, eRefHp: eRef.hp, sRefHp: sRef.hp };
       PH = 'p';   // ft() 结尾会进入 AI 回合，这里手动收尾，便于下一场接着跑
@@ -108,6 +134,7 @@ const PROJ = 'C:/Users/李泽文/Documents/Codex/2026-07-26/xian/lushi-godot';
         hp_right_after_ft: hpRightAfterFt,
         ref_check: refCheck,
         before,
+        debug: dbg,
         log: document.getElementById('log').innerText.split('\n').slice(-40),
         p: pick(pSide.ids),
         e: pick(eSide.ids),

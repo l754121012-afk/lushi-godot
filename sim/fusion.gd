@@ -21,9 +21,10 @@ static func find_formation(board: Array) -> int:
 			return start
 	return -1
 
-static func build_body(parts: Array, mech_level: int = 0, mag_t: int = 0) -> Dictionary:
+static func build_body(parts: Array, mech_level: int = 0, mag_t: int = 0, body_id: int = 0) -> Dictionary:
 	var body: Dictionary = parts[0].duplicate(true)
 	body["_mech_body"] = true
+	body["id"] = body_id if body_id > 0 else int(parts[0].get("id", 800000))
 	body["n"] = "合体·" + String(parts[0].get("n", ""))
 	body["a"] = 0
 	body["h"] = 0
@@ -63,27 +64,49 @@ static func build_body(parts: Array, mech_level: int = 0, mag_t: int = 0) -> Dic
 	body["h"] = int(body["mh"])
 	return body
 
-static func summons_for(body: Dictionary, mech_level: int = 0) -> Array:
+static func summons_for(body: Dictionary, mech_level: int = 0,
+		rng: RandomNumberGenerator = null, id_base: int = 0) -> Array:
 	var ba := int(body.get("a", 0))
 	var bh := int(body.get("h", 0))
-	return [
+	var pool := [
 		{"n": "磁暴僚机", "a": max(4, int(round(float(ba) * 0.45))) + mech_level, "h": max(6, int(round(float(bh) * 0.3))) + mech_level, "_followType": "strike"},
 		{"n": "维修无人机", "a": max(3, int(round(float(ba) * 0.25))) + mech_level, "h": max(8, int(round(float(bh) * 0.4))) + mech_level, "_followType": "repair"},
 		{"n": "电磁拦截者", "a": max(4, int(round(float(ba) * 0.3))) + mech_level, "h": max(10, int(round(float(bh) * 0.5))) + mech_level, "k": "td", "shield": true, "_followType": "guard"},
 	]
+	var local_rng := rng
+	if local_rng == null:
+		local_rng = RandomNumberGenerator.new()
+		local_rng.seed = int(body.get("id", 1)) * 97 + mech_level * 13 + 7
+	var out: Array = []
+	var body_id: int = int(body.get("id", 800000))
+	var summon_star: int = clampi(3 + int(floor(float(mech_level) / 2.0)), 3, 7)
+	for i in range(3):
+		var summoned: Dictionary = pool[local_rng.randi_range(0, pool.size() - 1)].duplicate(true)
+		summoned["id"] = (id_base + i) if id_base > 0 else (body_id * 10 + i)
+		summoned["s"] = summon_star
+		summoned["t"] = "m"
+		summoned["mh"] = int(summoned.get("h", 0))
+		summoned["race"] = "mech"
+		summoned["_followBodyId"] = body_id
+		out.append(summoned)
+	return out
 
 ## 返回 {ok, index, body, summons, board, armor}；board 为替换后的新棋盘
-static func prepare(board: Array, mech_level: int = 0, mag_t: int = 0, repair: int = 0) -> Dictionary:
+static func prepare(board: Array, mech_level: int = 0, mag_t: int = 0, repair: int = 0,
+		seed_value: int = 1, body_id: int = 0, summon_id_base: int = 0) -> Dictionary:
 	var idx := find_formation(board)
 	if idx < 0:
 		return {"ok": false}
 	var parts: Array = []
 	for i in range(idx, idx + 4):
 		parts.append(board[i])
-	var body := build_body(parts, mech_level, mag_t)
+	var body := build_body(parts, mech_level, mag_t, body_id)
+	body["_repair"] = repair
 	var out_board: Array = board.duplicate()
 	out_board[idx] = body
-	var summons := summons_for(body, mech_level)
+	var rng := RandomNumberGenerator.new()
+	rng.seed = seed_value
+	var summons := summons_for(body, mech_level, rng, summon_id_base)
 	for i in range(3):
 		out_board[idx + 1 + i] = summons[i]
 	return {"ok": true, "index": idx, "body": body, "summons": summons, "board": out_board, "armor": repair}

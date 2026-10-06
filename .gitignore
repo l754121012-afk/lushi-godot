@@ -1,5 +1,6 @@
 # Godot 编辑器缓存 / 导入产物
 .godot/
+*.import
 export_presets.cfg
 exports/
 
@@ -9,3 +10,9 @@ tests/out/
 # 系统与临时文件
 *.tmp
 Thumbs.db
+
+# 本地探针、截图和临时验证输出
+work/
+
+# 一次失败的 shell 重定向留下的空文件
+0)

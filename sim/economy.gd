@@ -35,6 +35,30 @@ static func streak_interest(win_streak: int, lose_streak: int) -> int:
 static func round_income(round_no: int, win_streak: int = 0, lose_streak: int = 0, tempo_bonus: int = 0) -> int:
 	return round_base_gold(round_no) + streak_interest(win_streak, lose_streak) + tempo_bonus
 
+
+## Web 的 aiStageGold：按 AI 难度在玩家回合收入之外追加阶段补给。
+static func ai_stage_gold(round_no: int, difficulty: int = 2) -> int:
+	for group in config().get("aiGold", []):
+		if int(group.get("difficulty", 0)) != difficulty:
+			continue
+		for row in group.get("rows", []):
+			if int(row.get("round", 0)) == round_no:
+				return int(row.get("gold", 0))
+	return 0
+
+
+## AI 开局势能比玩家更快成型的回合偏移。数字越大，AI 越早拿到后期阶段金币。
+static func ai_ramp_offset(difficulty: int = 2) -> int:
+	return [3, 6, 8][clampi(difficulty - 1, 0, 2)]
+
+
+static func ai_round_income(round_no: int, win_streak: int = 0, lose_streak: int = 0,
+		difficulty: int = 2, tempo_bonus: int = 0) -> int:
+	var stage_round: int = mini(20, round_no + ai_ramp_offset(difficulty))
+	return round_income(round_no, win_streak, lose_streak, tempo_bonus) \
+		+ ai_stage_gold(stage_round, difficulty)
+
+
 static func level_up_cost(level: int) -> int:
 	var costs: Array = config().get("levelCost", [])
 	if level < 0 or level >= costs.size():

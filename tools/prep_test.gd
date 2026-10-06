@@ -8,8 +8,9 @@ func _init() -> void:
 	_case_basic()
 	_case_with_support()
 	_case_titan_and_core()
+	_case_repair_support()
 	if fails.is_empty():
-		print("[prep_test] 通过：磁力喂料基础/支援加成/泰坦与核心 3/3")
+		print("[prep_test] 通过：磁力喂料基础/支援加成/泰坦与核心/维修输送车 4/4")
 		quit(0)
 	else:
 		for f in fails:
@@ -54,3 +55,22 @@ func _case_titan_and_core() -> void:
 	_check(int(core["modGrow"]) == 5, "普通统御核心应 +1，实际 %d" % int(core["modGrow"]))
 	_check(int(gold_core["modGrow"]) == 6, "金统御核心应 +2，实际 %d" % int(gold_core["modGrow"]))
 	print("[prep_test] 用例3 核心成长: 核心 modGrow=", core["modGrow"], " 金核心=", gold_core["modGrow"])
+
+func _case_repair_support() -> void:
+	var titan_mat := {"n": "装甲模块", "magA": 10, "magH": 0}
+	var titan_target := {"n": "磁力底盘", "a": 4, "h": 10, "mh": 10}
+	var titan_board := [{"n": "机械泰坦", "a": 18, "h": 32}]
+	var titan_res := Prep.magnet_feed(titan_mat, titan_target, titan_board, {})
+	_check(int(titan_res["a"]) == 10 and int(titan_target["a"]) == 17,
+		"机械泰坦应让本次转移攻击 +30%%，实际 transfer=%d targetA=%d" % [
+			int(titan_res["a"]), int(titan_target["a"])])
+
+	var repair_mat := {"n": "装甲模块", "magA": 0, "magH": 10}
+	var repair_target := {"n": "维修目标", "a": 4, "h": 100, "mh": 100}
+	var repair_board := [{"n": "维修输送车", "a": 5, "h": 9}]
+	var repair_res := Prep.magnet_feed(repair_mat, repair_target, repair_board,
+		{"mechLevel": 2})
+	_check(int(repair_res["mechRepair"]) == 24,
+		"维修输送车应按 8+8+8 累积 24 护甲，实际 %d" % int(repair_res["mechRepair"]))
+	print("[prep_test] 用例4 泰坦与维修: TitanTarget=", titan_target["a"],
+		" repair=", repair_res["mechRepair"])

@@ -533,6 +533,65 @@
      "race": "elem"
     }
    ]
+  },
+  {
+   "id": "mech_fusion_followup",
+   "name": "机械合体与协同攻击",
+   "seed": 23,
+   "fusionP": true,
+   "mechLevel": 2,
+   "magT": 4,
+   "mechRepair": 6,
+   "p": [
+    {
+     "n": "磁力底盘",
+     "a": 4,
+     "h": 10,
+     "s": 3,
+     "race": "mech",
+     "part": "core",
+     "k": "t",
+     "chargeMax": 3,
+     "chargeFx": "shield"
+    },
+    {
+     "n": "核心学徒",
+     "a": 4,
+     "h": 5,
+     "s": 3,
+     "race": "mech",
+     "part": "head",
+     "modGrow": 1
+    },
+    {
+     "n": "磁能臂",
+     "a": 8,
+     "h": 4,
+     "s": 3,
+     "race": "mech",
+     "part": "arm",
+     "k": "w"
+    },
+    {
+     "n": "推进肢体",
+     "a": 3,
+     "h": 12,
+     "s": 3,
+     "race": "mech",
+     "part": "leg",
+     "k": "t",
+     "modDmg": 2
+    }
+   ],
+   "e": [
+    {
+     "n": "合体木桩",
+     "a": 0,
+     "h": 80,
+     "s": 2,
+     "race": "elem"
+    }
+   ]
   }
  ]
 }
